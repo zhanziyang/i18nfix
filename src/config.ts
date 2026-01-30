@@ -39,7 +39,7 @@ export function normalizePlaceholderStyle(v?: string): PlaceholderStyle | Placeh
   // allow comma-separated list
   const parts = v.split(',').map((s) => s.trim()).filter(Boolean);
   const norm = (p: string): PlaceholderStyle => {
-    if (p === 'auto' || p === 'brace' || p === 'mustache' || p === 'printf') return p;
+    if (p === 'auto' || p === 'brace' || p === 'mustache' || p === 'printf' || p === 'ruby') return p;
     throw new Error(`Invalid --placeholder-style: ${p}`);
   };
   if (parts.length === 1) return norm(parts[0]!);

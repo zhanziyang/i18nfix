@@ -1,13 +1,6 @@
-import fs from 'node:fs/promises';
 import path from 'node:path';
 import { KeyStyle, PlaceholderStyle } from './types.js';
-
-export type JsonValue = null | boolean | number | string | JsonValue[] | { [k: string]: JsonValue };
-
-export async function readJson(filePath: string): Promise<JsonValue> {
-  const raw = await fs.readFile(filePath, 'utf8');
-  return JSON.parse(raw) as JsonValue;
-}
+import { JsonValue } from './fileio.js';
 
 export function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -91,12 +84,22 @@ export function placeholdersPrintf(s: string): string[] {
   return out;
 }
 
+export function placeholdersRuby(s: string): string[] {
+  // %{count}
+  const re = /%\{\s*([a-zA-Z0-9_]+)\s*\}/g;
+  const out: string[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(s))) out.push(m[1]!);
+  return out;
+}
+
 export function detectPlaceholderStyle(samples: string[]): PlaceholderStyle {
-  const score = { brace: 0, mustache: 0, printf: 0 };
+  const score = { brace: 0, mustache: 0, printf: 0, ruby: 0 };
   for (const s of samples) {
     score.brace += placeholdersBrace(s).length;
     score.mustache += placeholdersMustache(s).length;
     score.printf += placeholdersPrintf(s).length;
+    score.ruby += placeholdersRuby(s).length;
   }
   const best = Object.entries(score).sort((a, b) => b[1] - a[1])[0]![0];
   if (score[best as keyof typeof score] === 0) return 'brace';
@@ -111,6 +114,8 @@ export function getPlaceholderExtractor(style: PlaceholderStyle) {
       return placeholdersMustache;
     case 'printf':
       return placeholdersPrintf;
+    case 'ruby':
+      return placeholdersRuby;
     default:
       return placeholdersBrace;
   }

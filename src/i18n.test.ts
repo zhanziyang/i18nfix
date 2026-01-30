@@ -34,4 +34,9 @@ describe('i18n helpers', () => {
   it('printf placeholders', () => {
     expect(placeholdersPrintf('You have %1$s items and %d warnings')).toEqual(['%1$s', '%d']);
   });
+
+  it('ruby placeholders', async () => {
+    const { placeholdersRuby } = await import('./i18n.js');
+    expect(placeholdersRuby('il y a %{count} secondes')).toEqual(['count']);
+  });
 });

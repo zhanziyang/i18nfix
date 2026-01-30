@@ -1,6 +1,11 @@
 # i18nfix
 
-A CLI to **check**, **fix**, and **translate** i18n JSON locale files.
+A CLI to **check**, **fix**, and **translate** i18n locale files.
+
+Supported formats (common):
+- JSON: `.json`
+- YAML: `.yml` / `.yaml`
+- JS/TS modules exporting an object: `.js` / `.ts` (`export default { ... }` or `module.exports = { ... }`)
 
 What it can do:
 - Detect issues: missing keys, extra keys, empty values, possibly-untranslated values, placeholder mismatches

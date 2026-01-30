@@ -1,5 +1,5 @@
 export type KeyStyle = 'auto' | 'nested' | 'flat';
-export type PlaceholderStyle = 'auto' | 'brace' | 'mustache' | 'printf';
+export type PlaceholderStyle = 'auto' | 'brace' | 'mustache' | 'printf' | 'ruby';
 
 export interface TranslateConfig {
   provider: 'openai' | 'openrouter' | 'claude' | 'gemini';

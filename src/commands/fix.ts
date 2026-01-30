@@ -1,8 +1,8 @@
-import fs from 'node:fs/promises';
 import path from 'node:path';
 import { I18nFixConfig, Report } from '../types.js';
 import { runCheck } from './check.js';
-import { detectKeyStyle, flattenJson, isPlainObject, readJson, unflattenJson } from '../i18n.js';
+import { detectKeyStyle, flattenJson, isPlainObject, unflattenJson } from '../i18n.js';
+import { readLocaleFile, writeLocaleFile } from '../fileio.js';
 
 export interface FixOptions {
   inPlace: boolean;
@@ -16,7 +16,7 @@ export async function runFix(cfg: I18nFixConfig, opts: FixOptions): Promise<Repo
 
   let baseJson;
   try {
-    baseJson = await readJson(cfg.base);
+    baseJson = (await readLocaleFile(cfg.base)).data;
   } catch {
     return report;
   }
@@ -33,8 +33,10 @@ export async function runFix(cfg: I18nFixConfig, opts: FixOptions): Promise<Repo
 
   for (const targetFile of cfg.targets) {
     let targetJson: any;
+    let targetMeta: any;
     try {
-      targetJson = await readJson(targetFile);
+      targetMeta = await readLocaleFile(targetFile);
+      targetJson = targetMeta.data;
     } catch {
       continue;
     }
@@ -60,16 +62,15 @@ export async function runFix(cfg: I18nFixConfig, opts: FixOptions): Promise<Repo
 
     // write
     const outObj = effectiveKeyStyle === 'nested' ? unflattenJson(targetFlat) : targetFlat;
-    const outRaw = JSON.stringify(outObj, null, 2) + '\n';
 
     let outPath = targetFile;
     if (!opts.inPlace) {
       const dir = opts.outDir ? path.resolve(opts.outDir) : path.resolve(process.cwd(), 'fixed');
-      await fs.mkdir(dir, { recursive: true });
+      // keep same filename (incl. extension)
       outPath = path.join(dir, path.basename(targetFile));
     }
 
-    await fs.writeFile(outPath, outRaw, 'utf8');
+    await writeLocaleFile(outPath, outObj, { format: targetMeta.format, moduleKind: targetMeta.moduleKind });
   }
 
   return report;

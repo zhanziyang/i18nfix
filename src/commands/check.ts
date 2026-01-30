@@ -1,6 +1,4 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { I18nFixConfig, Issue, Report } from '../types.js';
+import { I18nFixConfig, Report } from '../types.js';
 import { addIssue, makeEmptyReport } from '../report.js';
 import {
   detectKeyStyle,
@@ -9,9 +7,8 @@ import {
   flattenJson,
   getPlaceholderExtractor,
   isPlainObject,
-  readJson,
-  unflattenJson,
 } from '../i18n.js';
+import { readLocaleFile } from '../fileio.js';
 
 function uniqSorted(arr: string[]) {
   return Array.from(new Set(arr)).sort();
@@ -32,9 +29,9 @@ export async function runCheck(cfg: I18nFixConfig): Promise<Report> {
 
   let baseJson;
   try {
-    baseJson = await readJson(cfg.base);
+    baseJson = (await readLocaleFile(cfg.base)).data;
   } catch (e: any) {
-    addIssue(report, { type: 'parse_error', file: cfg.base, message: `Failed to read base JSON: ${e?.message ?? e}` });
+    addIssue(report, { type: 'parse_error', file: cfg.base, message: `Failed to read base locale file: ${e?.message ?? e}` });
     return report;
   }
 
@@ -60,9 +57,9 @@ export async function runCheck(cfg: I18nFixConfig): Promise<Report> {
   for (const targetFile of cfg.targets) {
     let targetJson;
     try {
-      targetJson = await readJson(targetFile);
+      targetJson = (await readLocaleFile(targetFile)).data;
     } catch (e: any) {
-      addIssue(report, { type: 'parse_error', file: targetFile, message: `Failed to read target JSON: ${e?.message ?? e}` });
+      addIssue(report, { type: 'parse_error', file: targetFile, message: `Failed to read target locale file: ${e?.message ?? e}` });
       continue;
     }
 

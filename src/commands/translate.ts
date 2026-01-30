@@ -1,8 +1,8 @@
-import fs from 'node:fs/promises';
 import path from 'node:path';
 import chalk from 'chalk';
 import { I18nFixConfig, TranslateConfig } from '../types.js';
-import { detectKeyStyle, flattenJson, getPlaceholderExtractor, isPlainObject, readJson, unflattenJson } from '../i18n.js';
+import { detectKeyStyle, flattenJson, getPlaceholderExtractor, isPlainObject, unflattenJson } from '../i18n.js';
+import { readLocaleFile, writeLocaleFile } from '../fileio.js';
 import { translate as doTranslate } from '../providers/index.js';
 import { runCheck } from './check.js';
 import { sleep } from '../providers/util.js';
@@ -59,7 +59,7 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
   const maxItems = tc.maxItems ?? 200;
 
   let baseJson: any;
-  baseJson = await readJson(cfg.base);
+  baseJson = (await readLocaleFile(cfg.base)).data;
 
   const effectiveKeyStyle = cfg.keyStyle === 'auto' || !cfg.keyStyle ? detectKeyStyle(baseJson) : cfg.keyStyle;
   const baseFlat =
@@ -88,7 +88,9 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
 
   for (const targetFile of cfg.targets) {
     let targetJson: any;
-    targetJson = await readJson(targetFile);
+    let targetMeta: any;
+    targetMeta = await readLocaleFile(targetFile);
+    targetJson = targetMeta.data;
 
     let targetFlat: Record<string, any> =
       effectiveKeyStyle === 'nested'
@@ -168,16 +170,14 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
 
     // write
     const outObj = effectiveKeyStyle === 'nested' ? unflattenJson(targetFlat) : targetFlat;
-    const outRaw = JSON.stringify(outObj, null, 2) + '\n';
 
     let outPath = targetFile;
     if (!opts.inPlace) {
       const dir = opts.outDir ? path.resolve(opts.outDir) : path.resolve(process.cwd(), 'translated');
-      await fs.mkdir(dir, { recursive: true });
       outPath = path.join(dir, path.basename(targetFile));
     }
 
-    await fs.writeFile(outPath, outRaw, 'utf8');
+    await writeLocaleFile(outPath, outObj, { format: targetMeta.format, moduleKind: targetMeta.moduleKind });
     console.log(chalk.green(`Wrote: ${outPath}`));
     if (remaining > 0) {
       console.log(chalk.gray(`Next: re-run translate to process remaining items, or increase translate.maxItems in config.`));

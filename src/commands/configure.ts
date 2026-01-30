@@ -52,6 +52,7 @@ export async function runConfigure(configPath?: string) {
         { name: 'brace: {name}', value: 'brace' },
         { name: 'mustache: {{name}}', value: 'mustache' },
         { name: 'printf: %s %d %1$s', value: 'printf' },
+        { name: 'ruby: %{count}', value: 'ruby' },
       ],
       default:
         current?.placeholderStyle == null

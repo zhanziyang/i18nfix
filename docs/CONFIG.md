@@ -5,7 +5,12 @@ This document explains every supported field in `i18nfix.config.json`.
 ## Top-level
 
 ### `base` (string, required)
-Path to the **source** locale JSON.
+Path to the **source** locale file.
+
+Supported formats (common):
+- `.json`
+- `.yml` / `.yaml`
+- `.ts` / `.js` exporting an object (`export default { ... }` or `module.exports = { ... }`)
 
 Example:
 ```json
@@ -37,6 +42,7 @@ Supported:
 - `brace` → `{name}`
 - `mustache` → `{{name}}`
 - `printf` → `%s`, `%d`, `%1$s`
+- `ruby` → `%{count}`
 
 Default: `auto`
 

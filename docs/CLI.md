@@ -12,7 +12,7 @@ These options are shared by most commands:
 - `--base <path>`: override base locale path
 - `--targets <paths>`: override targets (comma-separated)
 - `--key-style <auto|nested|flat>`: override key style
-- `--placeholder-style <auto|brace|mustache|printf|list>`: placeholder validation style (comma-separated list supported)
+- `--placeholder-style <auto|brace|mustache|printf|ruby|list>`: placeholder validation style (comma-separated list supported)
 - `--ignore-keys <keys>`: ignore keys (comma-separated)
 
 Precedence:
