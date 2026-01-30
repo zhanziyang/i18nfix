@@ -177,7 +177,11 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       outPath = path.join(dir, path.basename(targetFile));
     }
 
-    await writeLocaleFile(outPath, outObj, { format: targetMeta.format, moduleKind: targetMeta.moduleKind });
+    await writeLocaleFile(outPath, outObj, {
+      format: targetMeta.format,
+      moduleKind: targetMeta.moduleKind,
+      originalRaw: targetMeta.raw,
+    });
     console.log(chalk.green(`Wrote: ${outPath}`));
     if (remaining > 0) {
       console.log(chalk.gray(`Next: re-run translate to process remaining items, or increase translate.maxItems in config.`));

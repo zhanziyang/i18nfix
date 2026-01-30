@@ -70,7 +70,11 @@ export async function runFix(cfg: I18nFixConfig, opts: FixOptions): Promise<Repo
       outPath = path.join(dir, path.basename(targetFile));
     }
 
-    await writeLocaleFile(outPath, outObj, { format: targetMeta.format, moduleKind: targetMeta.moduleKind });
+    await writeLocaleFile(outPath, outObj, {
+      format: targetMeta.format,
+      moduleKind: targetMeta.moduleKind,
+      originalRaw: targetMeta.raw,
+    });
   }
 
   return report;

@@ -19,6 +19,27 @@ describe('fileio', () => {
     expect(r.format).toBe('ts');
     expect(r.moduleKind).toBe('esm');
     expect((r.data as any).brand.name).toBe('Hearem');
+    expect(typeof r.raw).toBe('string');
+  });
+
+  it('writes .ts preserving unquoted keys (best-effort)', async () => {
+    const p = path.join(tmp, 'base.ts');
+    await fs.mkdir(tmp, { recursive: true });
+    const original = "export default { brand: { name: 'Hearem' }, common: { loading: 'Chargement...' } };\n";
+    await fs.writeFile(p, original, 'utf8');
+
+    const r = await readLocaleFile(p);
+    const outPath = path.join(tmp, 'out.ts');
+    await writeLocaleFile(outPath, {
+      ...(r.data as any),
+      common: { ...(r.data as any).common, initializingPleaseWait: 'Init...' }
+    } as any, { format: 'ts', moduleKind: 'esm', originalRaw: r.raw });
+
+    const out = await fs.readFile(outPath, 'utf8');
+    expect(out).toContain('export default');
+    // new key should be identifier-style (no quotes)
+    expect(out).toContain('initializingPleaseWait');
+    expect(out).not.toContain('"initializingPleaseWait"');
   });
 
   it('reads module.exports object from .js', async () => {

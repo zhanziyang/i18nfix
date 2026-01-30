@@ -30,12 +30,14 @@
     "vitest": "^4.0.18"
   },
   "dependencies": {
+    "@babel/generator": "^7.28.6",
     "@babel/parser": "^7.28.4",
     "chalk": "^5.6.2",
     "commander": "^14.0.2",
     "dotenv": "^17.2.3",
     "fast-glob": "^3.3.3",
     "inquirer": "^13.2.2",
+    "recast": "^0.23.11",
     "yaml": "^2.8.1"
   },
   "files": [
