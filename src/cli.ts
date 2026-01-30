@@ -6,6 +6,7 @@ import { runInit } from './commands/init.js';
 import { runCheck } from './commands/check.js';
 import { runFix } from './commands/fix.js';
 import { runTranslate } from './commands/translate.js';
+import { runConfigure } from './commands/configure.js';
 
 const program = new Command();
 program
@@ -19,6 +20,15 @@ program
   .option('-c, --config <path>', 'config path (default: i18nfix.config.json)')
   .action(async (opts) => {
     const p = await runInit(opts.config);
+    console.log(chalk.green(`Wrote config: ${p}`));
+  });
+
+program
+  .command('config')
+  .description('Interactive Q&A to update i18nfix.config.json (or create it if missing)')
+  .option('-c, --config <path>', 'config path (default: i18nfix.config.json)')
+  .action(async (opts) => {
+    const p = await runConfigure(opts.config);
     console.log(chalk.green(`Wrote config: ${p}`));
   });
 

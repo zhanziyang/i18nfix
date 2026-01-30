@@ -53,10 +53,14 @@ What this example demonstrates:
 
 
 
-### 1) Create config
+### 1) Create or update config
 
 ```bash
+# create
 node dist/cli.js init
+
+# update via Q&A (loads existing config and rewrites it)
+node dist/cli.js config
 ```
 
 This writes `i18nfix.config.json` in the current directory.
