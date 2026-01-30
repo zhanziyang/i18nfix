@@ -58,5 +58,7 @@ export function mergeConfig(
     ignoreKeys: overrides.ignoreKeys ?? base.ignoreKeys ?? [],
     treatSameAsBaseAsUntranslated:
       overrides.treatSameAsBaseAsUntranslated ?? base.treatSameAsBaseAsUntranslated ?? true,
+    // preserve translate config unless explicitly overridden
+    translate: overrides.translate ?? base.translate,
   };
 }
