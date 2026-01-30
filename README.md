@@ -133,6 +133,11 @@ Language handling:
 - `targetLang` is inferred from the target filename when not provided (e.g. `zh.json`, `ja.json`, `fr-FR.json` → `zh`, `ja`, `fr`).
 - from/to languages are printed by default during translation. Use `translate --no-show-langs` to hide.
 
+## Full documentation
+
+- CLI reference: `docs/CLI.md`
+- Config reference: `docs/CONFIG.md`
+
 ## CLI notes
 
 - `translate --mode`:

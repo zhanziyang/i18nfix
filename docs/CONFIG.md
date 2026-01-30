@@ -1,0 +1,123 @@
+# i18nfix Config Reference (`i18nfix.config.json`)
+
+This document explains every supported field in `i18nfix.config.json`.
+
+## Top-level
+
+### `base` (string, required)
+Path to the **source** locale JSON.
+
+Example:
+```json
+{ "base": "locales/en.json" }
+```
+
+### `targets` (string[], required)
+Paths to **target** locale JSON files.
+
+Example:
+```json
+{ "targets": ["locales/zh.json", "locales/ja.json"] }
+```
+
+### `keyStyle` (`auto` | `nested` | `flat`, optional)
+How translation keys are represented.
+
+- `nested`: `{ "home": { "title": "..." } }`
+- `flat`: `{ "home.title": "..." }`
+- `auto`: detect from the base file
+
+Default: `auto`
+
+### `placeholderStyle` (string or string[], optional)
+Which placeholder syntax to validate.
+
+Supported:
+- `auto`
+- `brace` → `{name}`
+- `mustache` → `{{name}}`
+- `printf` → `%s`, `%d`, `%1$s`
+
+Default: `auto`
+
+### `ignoreKeys` (string[], optional)
+Keys to ignore in check/fix/translate.
+
+Default: `[]`
+
+### `treatSameAsBaseAsUntranslated` (boolean, optional)
+If true, values in target that exactly equal base are treated as **possibly untranslated**.
+
+Default: `true`
+
+---
+
+## `translate` (object, optional)
+Enables LLM translation.
+
+### `translate.provider` (required if `translate` exists)
+One of:
+- `openai`
+- `openrouter`
+- `claude`
+- `gemini`
+
+### `translate.apiKeyEnv` (recommended)
+Name of the environment variable holding the API key.
+
+Examples:
+- OpenAI: `OPENAI_API_KEY`
+- OpenRouter: `OPENROUTER_API_KEY`
+- Claude: `ANTHROPIC_API_KEY`
+- Gemini: `GEMINI_API_KEY`
+
+> i18nfix auto-loads `.env` in the current directory.
+
+### `translate.apiKey` (not recommended)
+You *can* inline a key here, but it is easy to leak/commit by accident. Prefer `apiKeyEnv`.
+
+### `translate.model` (optional)
+Provider model name.
+
+Examples:
+- OpenAI: `gpt-4o-mini`
+- OpenRouter: `anthropic/claude-3.5-sonnet`
+- Claude: `claude-3-5-haiku-latest`
+- Gemini: `gemini-1.5-flash`
+
+### `translate.baseUrl` (optional)
+For OpenAI-compatible endpoints (mainly for self-hosted proxies). Usually not needed.
+
+### `translate.maxItems` (number, optional)
+Safety limit: maximum strings translated **per run**.
+
+Default: `200`
+
+If there are more items than `maxItems`, i18nfix will translate the first batch and print how many remain.
+
+### `translate.delayMs` (number, optional)
+Delay between requests (ms). Useful for rate limits.
+
+Default: `0`
+
+---
+
+## Full example
+
+```json
+{
+  "base": "locales/en.json",
+  "targets": ["locales/zh.json"],
+  "keyStyle": "auto",
+  "placeholderStyle": ["auto"],
+  "ignoreKeys": [],
+  "treatSameAsBaseAsUntranslated": true,
+  "translate": {
+    "provider": "openai",
+    "apiKeyEnv": "OPENAI_API_KEY",
+    "model": "gpt-4o-mini",
+    "maxItems": 200,
+    "delayMs": 0
+  }
+}
+```

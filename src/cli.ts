@@ -111,7 +111,8 @@ program
 applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
   .option('--in-place', 'overwrite target files', false)
   .option('--out-dir <dir>', 'write fixed files to a directory')
-  .option('--keep-extra-keys', 'do not remove extra keys', true)
+  .option('--drop-extra-keys', 'remove keys that are not present in base', false)
+  .option('--keep-extra-keys', 'do not remove extra keys (deprecated; default behavior)', true)
   .option('--fill-missing-with-base', 'fill missing keys with base value (otherwise empty string)', false)
   .option('--translate', 'run translation after fix (requires translate config)', false)
   .option('--translate-mode <all|missing|empty|untranslated>', 'what to translate after fix', 'all')
@@ -131,7 +132,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
     const report = await runFix(cfg, {
       inPlace: Boolean(opts.inPlace),
       outDir: opts.outDir,
-      keepExtraKeys: Boolean(opts.keepExtraKeys),
+      keepExtraKeys: !Boolean(opts.dropExtraKeys),
       fillMissingWithBase: Boolean(opts.fillMissingWithBase),
     });
 
