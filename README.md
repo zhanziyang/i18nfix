@@ -24,6 +24,88 @@ npm run build
 node dist/cli.js --help
 ```
 
+
+## Getting started (integrate into an existing project)
+
+### 1) Install
+
+```bash
+npm i -D i18nfix
+```
+
+### 2) Create/update config (Q&A)
+
+```bash
+npx i18nfix config
+```
+
+This writes `i18nfix.config.json` in your project root.
+
+### 3) Add npm scripts
+
+Add to your project's `package.json`:
+
+```json
+{
+  "scripts": {
+    "i18n:config": "i18nfix config",
+    "i18n:check": "i18nfix check",
+    "i18n:fix": "i18nfix fix --out-dir fixed",
+    "i18n:fix:inplace": "i18nfix fix --in-place",
+    "i18n:fix:drop-extra": "i18nfix fix --in-place --drop-extra-keys",
+    "i18n:fix:translate": "i18nfix fix --in-place --translate",
+    "i18n:fix:translate:verbose": "i18nfix fix --in-place --translate -v"
+  }
+}
+```
+
+### 4) (Optional) Enable translation via `.env`
+
+Create `.env` in your project root:
+
+```env
+OPENAI_API_KEY=xxx
+# or: OPENROUTER_API_KEY / ANTHROPIC_API_KEY / GEMINI_API_KEY
+```
+
+Then add a `translate` section to `i18nfix.config.json`:
+
+```json
+{
+  "translate": {
+    "provider": "openai",
+    "apiKeyEnv": "OPENAI_API_KEY",
+    "model": "gpt-4o-mini",
+    "maxItems": 200,
+    "delayMs": 0
+  }
+}
+```
+
+### 5) CI example (GitHub Actions)
+
+Create `.github/workflows/i18nfix.yml`:
+
+```yaml
+name: i18nfix
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run i18n:check
+```
+
 ## Quick start (recommended workflow)
 
 ### 1) Create/update config (Q&A)
