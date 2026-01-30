@@ -8,6 +8,13 @@ import { runCheck } from './check.js';
 import { sleep } from '../providers/util.js';
 
 
+function inferSourceLang(filePath: string): string | undefined {
+  const base = path.basename(filePath);
+  const m = base.match(/^([a-zA-Z]{2,3})([-_][a-zA-Z]{2,4})?\./);
+  if (!m) return undefined;
+  return m[1]!.toLowerCase();
+}
+
 function inferTargetLang(filePath: string): string | undefined {
   const base = path.basename(filePath);
   // common patterns: zh.json, zh-CN.json, pt_BR.json, en-US.json
@@ -20,7 +27,10 @@ export interface TranslateRunOptions {
   inPlace: boolean;
   outDir?: string;
   mode: 'missing' | 'empty' | 'untranslated' | 'all';
+  showLangs?: boolean;
+  printText?: boolean;
 }
+
 
 function getApiKey(tc: TranslateConfig): string {
   if (tc.apiKey) return tc.apiKey;
@@ -116,6 +126,11 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       continue;
     }
 
+    const fromLang = tc.sourceLang ?? inferSourceLang(cfg.base) ?? 'auto';
+    const toLang = tc.targetLang ?? inferTargetLang(targetFile) ?? 'auto';
+    if (opts.showLangs) {
+      console.log(chalk.gray(`from: ${fromLang}  ->  to: ${toLang}`));
+    }
     console.log(chalk.bold(`Translating ${items.length} items for ${targetFile} (mode=${opts.mode})...`));
 
     for (let i = 0; i < items.length; i++) {
@@ -131,13 +146,19 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
         },
         {
           text: baseText,
-          sourceLang: tc.sourceLang,
-          targetLang: tc.targetLang ?? inferTargetLang(targetFile),
+          sourceLang: fromLang === "auto" ? undefined : fromLang,
+          targetLang: toLang,
           placeholderHints: hints,
         }
       );
 
       targetFlat[k] = res.text;
+      if (opts.printText) {
+        console.log();
+        console.log(chalk.cyan(k));
+        console.log(chalk.gray(`BASE: ${baseText}`));
+        console.log(chalk.green(`TRNS: ${res.text}`));
+      }
       // show progress + current key
       const keyLabel = chalk.gray(k);
       process.stdout.write(chalk.green(`\r  ${i + 1}/${items.length}`) + ' ' + keyLabel + ' '.repeat(10));
