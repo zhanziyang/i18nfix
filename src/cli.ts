@@ -39,9 +39,21 @@ program
 
 applyCommonOptions(program.commands.find((c) => c.name() === 'check')!)
   .option('--json', 'print JSON report', false)
+  .option('--init-if-missing', 'run init wizard if config is missing', false)
   .action(async (opts) => {
     const configPath = resolveConfigPath(opts.config);
-    const cfg0 = await loadConfig(configPath);
+    let cfg0;
+    try {
+      cfg0 = await loadConfig(configPath);
+    } catch (e) {
+      if (opts.initIfMissing) {
+        const p = await runInit(opts.config);
+        cfg0 = await loadConfig(p);
+      } else {
+        throw e;
+      }
+    }
+
     const cfg = mergeConfig(cfg0, {
       base: opts.base,
       targets: opts.targets ? opts.targets.split(',').map((s: string) => s.trim()).filter(Boolean) : undefined,
