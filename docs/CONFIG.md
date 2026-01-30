@@ -116,6 +116,10 @@ How many LLM requests to run in parallel.
 
 Default: `3`
 
+## Translation quality/safety
+
+In batch mode, i18nfix will validate placeholder consistency. If a translated string is missing or has mismatched placeholders, it will automatically retry that item in single-item mode.
+
 ---
 
 ## Full example

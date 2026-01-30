@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import { I18nFixConfig, TranslateConfig } from '../types.js';
 import { detectKeyStyle, flattenJson, getPlaceholderExtractor, isPlainObject, unflattenJson } from '../i18n.js';
 import { readLocaleFile, writeLocaleFile } from '../fileio.js';
-import { translateBatch } from '../providers/index.js';
+import { translate as doTranslate, translateBatch } from '../providers/index.js';
 import { runCheck } from './check.js';
 import { sleep } from '../providers/util.js';
 import { mapLimit } from '../providers/pool.js';
@@ -148,16 +148,53 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
 
     await mapLimit(batches, concurrency, async (batch) => {
       const payload = batch.map((k) => ({ key: k, text: String(baseFlat[k]) }));
-      const result = await translateBatch(
-        { provider: tc.provider, apiKey, model: tc.model, baseUrl: tc.baseUrl },
-        payload,
-        { sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang }
-      );
+
+      // first try batch
+      let result: Record<string, string> = {};
+      try {
+        result = await translateBatch(
+          { provider: tc.provider, apiKey, model: tc.model, baseUrl: tc.baseUrl },
+          payload,
+          { sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang }
+        );
+      } catch (e: any) {
+        console.warn(chalk.yellow(`\nBatch translate failed; falling back to single-item mode for this batch. (${e?.message ?? e})`));
+      }
 
       for (const k of batch) {
         const baseText = String(baseFlat[k]);
-        const translated = result[k];
-        if (typeof translated === 'string' && translated.trim()) {
+        let translated = result[k];
+
+        // validate placeholders; if invalid or missing, retry single-item
+        if (!translated || !translated.trim()) {
+          // fallback single-item
+          try {
+            const r = await doTranslate(
+              { provider: tc.provider, apiKey, model: tc.model, baseUrl: tc.baseUrl },
+              { text: baseText, sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang, placeholderHints: extractor(baseText) }
+            );
+            translated = r.text;
+          } catch {
+            translated = '';
+          }
+        } else {
+          // placeholder mismatch fallback
+          try {
+            const { placeholderOk } = await import('../providers/validate.js');
+            const ok = placeholderOk(placeholderStyle === 'auto' ? 'brace' : (placeholderStyle as any), baseText, translated);
+            if (!ok) {
+              const r = await doTranslate(
+                { provider: tc.provider, apiKey, model: tc.model, baseUrl: tc.baseUrl },
+                { text: baseText, sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang, placeholderHints: extractor(baseText) }
+              );
+              translated = r.text;
+            }
+          } catch {
+            // ignore validation errors
+          }
+        }
+
+        if (translated && translated.trim()) {
           targetFlat[k] = translated;
           if (opts.printText) {
             console.log();
@@ -166,6 +203,7 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
             console.log(chalk.green(`TRNS: ${translated}`));
           }
         }
+
         done++;
         const keyLabel = chalk.gray(k);
         process.stdout.write(chalk.green(`\r  ${done}/${items.length}`) + ' ' + keyLabel + ' '.repeat(10));
