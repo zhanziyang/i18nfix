@@ -120,7 +120,12 @@ Default: `3`
 
 ## Translation quality/safety
 
-In batch mode, i18nfix will validate placeholder consistency. If a translated string is missing or has mismatched placeholders, it will automatically retry that item in single-item mode.
+In batch mode, i18nfix validates:
+- placeholders
+- HTML tags
+- basic Markdown markers
+
+If a translated string is missing or fails validation, i18nfix automatically retries that item in single-item mode.
 
 ### `translate.retryCount` (number, optional)
 How many times to retry single-item fallback calls on transient errors (429/5xx/timeouts).
@@ -138,8 +143,8 @@ Default: `400`
 
 ```json
 {
-  "base": "locales/en.json",
-  "targets": ["locales/zh.json"],
+  "base": "locales/en.ts",
+  "targets": ["locales/fr.ts", "locales/ja.ts"],
   "keyStyle": "auto",
   "placeholderStyle": ["auto"],
   "ignoreKeys": [],
@@ -148,8 +153,17 @@ Default: `400`
     "provider": "openai",
     "apiKeyEnv": "OPENAI_API_KEY",
     "model": "gpt-4o-mini",
-    "maxItems": 200,
+
+    "batchSize": 50,
+    "concurrency": 3,
+
+    "retryCount": 3,
+    "retryBaseDelayMs": 400,
+
+    "cache": true,
+
     "delayMs": 0
+    // maxItems is optional; when unset there is no limit
   }
 }
 ```

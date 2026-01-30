@@ -75,7 +75,7 @@ Add to your project's `package.json`:
 }
 ```
 
-### 4) (Optional) Enable translation via `.env`
+### 5) (Optional) Enable translation via `.env`
 
 Create `.env` in your project root:
 
@@ -208,6 +208,11 @@ Minimal example:
 
 Keys should be provided via environment variables (recommended). i18nfix will also auto-load a local `.env` file.
 
+Defaults / behavior:
+- Batch translation is enabled when `batchSize` is set (recommended for speed). If a batch output is missing keys or fails validation, i18nfix automatically retries those items in single-item mode.
+- By default i18nfix validates placeholders + HTML tags + basic Markdown markers.
+- Translation cache is enabled by default (`.i18nfix-cache/translations.jsonl`).
+
 Example:
 
 ```json
@@ -216,8 +221,17 @@ Example:
     "provider": "openai",
     "apiKeyEnv": "OPENAI_API_KEY",
     "model": "gpt-4o-mini",
-    "delayMs": 0,
-    "maxItems": 200
+
+    "batchSize": 50,
+    "concurrency": 3,
+
+    "retryCount": 3,
+    "retryBaseDelayMs": 400,
+
+    "cache": true,
+
+    "delayMs": 0
+    // maxItems is optional; when unset there is no limit
   }
 }
 ```
@@ -243,7 +257,14 @@ Language handling:
   - default is `all` (only keys with issues)
   - `missing` / `empty` / `untranslated` are narrower modes
 - `maxItems`:
-  - if there are more than `maxItems` keys to translate, it will translate the first batch and print how many remain.
+  - optional (default: no limit)
+  - when set, i18nfix will translate at most that many strings per run and print how many remain.
+- output validation (default on):
+  - placeholders must match
+  - HTML tags must be preserved
+  - basic Markdown markers must be preserved
+- caching (default on):
+  - `.i18nfix-cache/translations.jsonl`
 
 ## Roadmap
 
