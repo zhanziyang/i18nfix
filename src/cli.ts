@@ -134,6 +134,15 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
 
     console.log(chalk.green('Done.'));
     console.log(`Issues found: ${report.issues.length}`);
+
+    if (opts.translate) {
+      await runTranslate(cfg, {
+        inPlace: Boolean(opts.inPlace),
+        outDir: opts.translateOutDir ?? opts.outDir,
+        mode: opts.translateMode,
+      });
+    }
+
     process.exit(report.summary.parseErrors > 0 ? 2 : 0);
   });
 
