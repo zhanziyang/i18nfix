@@ -141,7 +141,7 @@ Run:
 If `translate.targetLang` is not set, i18nfix will try to infer it from the target filename (e.g. `zh.json`, `ja.json`, `fr-FR.json`).
 
 ```bash
-# translate missing keys (default)
+# translate only problematic keys (default: all)
 node dist/cli.js translate --mode missing --out-dir translated
 
 # translate empty values
