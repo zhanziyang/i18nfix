@@ -26,7 +26,7 @@ Precedence:
 Create a new `i18nfix.config.json` via an interactive wizard.
 
 ```bash
-node dist/cli.js init
+i18nfix init
 ```
 
 Options:
@@ -39,7 +39,7 @@ Options:
 Interactive Q&A to **update** `i18nfix.config.json` (or create it if missing).
 
 ```bash
-node dist/cli.js config
+i18nfix config
 ```
 
 Options:
@@ -52,8 +52,8 @@ Options:
 Check target locales vs base locale.
 
 ```bash
-node dist/cli.js check
-node dist/cli.js check --json
+i18nfix check
+i18nfix check --json
 ```
 
 Options:
@@ -73,8 +73,8 @@ Exit codes:
 Fix target locales (add missing keys, optionally remove extra keys). Can also run translation afterwards.
 
 ```bash
-node dist/cli.js fix --out-dir fixed
-node dist/cli.js fix --in-place
+i18nfix fix --out-dir fixed
+i18nfix fix --in-place
 ```
 
 Options:
@@ -101,9 +101,9 @@ Translation options:
 Translate strings using an LLM provider.
 
 ```bash
-node dist/cli.js translate --out-dir translated
-node dist/cli.js translate -v
-node dist/cli.js translate --no-show-langs
+i18nfix translate --out-dir translated
+i18nfix translate -v
+i18nfix translate --no-show-langs
 ```
 
 Options:

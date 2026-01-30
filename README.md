@@ -21,7 +21,7 @@ cd i18nfix
 npm install
 npm run build
 
-node dist/cli.js --help
+i18nfix --help
 ```
 
 
@@ -112,10 +112,10 @@ jobs:
 
 ```bash
 # create
-node dist/cli.js init
+i18nfix init
 
 # update later via Q&A
-node dist/cli.js config
+i18nfix config
 ```
 
 This writes `i18nfix.config.json` in the current directory.
@@ -123,9 +123,9 @@ This writes `i18nfix.config.json` in the current directory.
 ### 2) Check
 
 ```bash
-node dist/cli.js check
+i18nfix check
 # JSON report
-node dist/cli.js check --json
+i18nfix check --json
 ```
 
 ### 3) Fix + Translate (one command)
@@ -133,25 +133,25 @@ node dist/cli.js check --json
 ```bash
 # fix output to ./fixed
 # then translate output to ./translated
-node dist/cli.js fix --out-dir fixed --translate --translate-out-dir translated
+i18nfix fix --out-dir fixed --translate --translate-out-dir translated
 ```
 
 Fix and translate into the **same directory** (e.g. `dist-locales/`):
 
 ```bash
-node dist/cli.js fix --out-dir dist-locales --translate --translate-out-dir dist-locales
+i18nfix fix --out-dir dist-locales --translate --translate-out-dir dist-locales
 ```
 
 Fix and translate **in-place** (overwrite your target files):
 
 ```bash
-node dist/cli.js fix --in-place --translate
+i18nfix fix --in-place --translate
 ```
 
 Verbose (prints BASE/TRNS for each translated key):
 
 ```bash
-node dist/cli.js fix --out-dir fixed --translate --translate-out-dir translated -v
+i18nfix fix --out-dir fixed --translate --translate-out-dir translated -v
 ```
 
 ## Example included
@@ -159,8 +159,8 @@ node dist/cli.js fix --out-dir fixed --translate --translate-out-dir translated 
 Try the included example files:
 
 ```bash
-node dist/cli.js check --config examples/i18nfix.config.json
-node dist/cli.js fix --config examples/i18nfix.config.json --out-dir examples/fixed --translate --translate-out-dir examples/translated
+i18nfix check --config examples/i18nfix.config.json
+i18nfix fix --config examples/i18nfix.config.json --out-dir examples/fixed --translate --translate-out-dir examples/translated
 ```
 
 What the example demonstrates:
