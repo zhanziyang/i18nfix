@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { I18nFixConfig, TranslateConfig } from '../types.js';
 import { detectKeyStyle, flattenJson, getPlaceholderExtractor, isPlainObject, readJson, unflattenJson } from '../i18n.js';
 import { translate as doTranslate } from '../providers/index.js';
+import { runCheck } from './check.js';
 import { sleep } from '../providers/util.js';
 
 
@@ -18,7 +19,7 @@ function inferTargetLang(filePath: string): string | undefined {
 export interface TranslateRunOptions {
   inPlace: boolean;
   outDir?: string;
-  mode: 'missing' | 'empty' | 'untranslated';
+  mode: 'missing' | 'empty' | 'untranslated' | 'issues' | 'all';
 }
 
 function getApiKey(tc: TranslateConfig): string {
@@ -62,6 +63,19 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
   const ignore = new Set(cfg.ignoreKeys ?? []);
   const baseKeys = Object.keys(baseFlat).filter((k) => !ignore.has(k));
 
+  const modeKeysByFile: Map<string, Set<string>> = new Map();
+  if (opts.mode === 'issues' || opts.mode === 'all') {
+    const report = await runCheck(cfg);
+    for (const issue of report.issues) {
+      if (!issue.key) continue;
+      if (issue.type === 'missing_key' || issue.type === 'empty_value' || issue.type === 'untranslated' || issue.type === 'placeholder_mismatch') {
+        const s = modeKeysByFile.get(issue.file) ?? new Set();
+        s.add(issue.key);
+        modeKeysByFile.set(issue.file, s);
+      }
+    }
+  }
+
   for (const targetFile of cfg.targets) {
     let targetJson: any;
     targetJson = await readJson(targetFile);
@@ -74,6 +88,9 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
     const targetKeys = new Set(Object.keys(targetFlat).filter((k) => !ignore.has(k)));
 
     const toTranslate: string[] = [];
+
+    const issueSet = modeKeysByFile.get(targetFile);
+
     for (const k of baseKeys) {
       const baseVal = baseFlat[k];
       const has = targetKeys.has(k);
@@ -82,8 +99,9 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       if (typeof baseVal !== 'string' || !baseVal.trim()) continue;
 
       if (opts.mode === 'missing' && !has) toTranslate.push(k);
-      if (opts.mode === 'empty' && has && typeof targetVal === 'string' && targetVal.trim().length === 0) toTranslate.push(k);
-      if (opts.mode === 'untranslated' && has && cfg.treatSameAsBaseAsUntranslated && targetVal === baseVal) toTranslate.push(k);
+      else if (opts.mode === 'empty' && has && typeof targetVal === 'string' && targetVal.trim().length === 0) toTranslate.push(k);
+      else if (opts.mode === 'untranslated' && has && cfg.treatSameAsBaseAsUntranslated && targetVal === baseVal) toTranslate.push(k);
+      else if ((opts.mode === 'issues' || opts.mode === 'all') && issueSet && issueSet.has(k)) toTranslate.push(k);
     }
 
     const items = toTranslate.slice(0, maxItems);
