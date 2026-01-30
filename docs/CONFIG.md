@@ -18,7 +18,9 @@ Example:
 ```
 
 ### `targets` (string[], required)
-Paths to **target** locale JSON files.
+Paths to **target** locale files.
+
+Supported formats are the same as `base`.
 
 Example:
 ```json

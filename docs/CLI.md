@@ -22,6 +22,25 @@ Precedence:
 
 ---
 
+## `new`
+
+Create new target locale files for additional languages by copying base values.
+
+```bash
+i18nfix new --langs fr,ja,zh
+```
+
+Options:
+- `-c, --config <path>`: config path (default: `i18nfix.config.json`)
+- `--langs <langs>`: comma-separated language codes (e.g. `fr,ja,zh`)
+- `--skip-existing`: skip creating files that already exist (default: true)
+- `--no-update-config`: do not add created/existing target files into config
+
+Notes:
+- If an existing target filename pattern exists, i18nfix follows it (e.g. `en.ts` → `fr.ts`).
+
+---
+
 ## `init`
 
 Create a new `i18nfix.config.json` via an interactive wizard.
