@@ -1,5 +1,6 @@
 import path from 'node:path';
 import chalk from 'chalk';
+import cliProgress from 'cli-progress';
 import { I18nFixConfig, TranslateConfig } from '../types.js';
 import { detectKeyStyle, flattenJson, getPlaceholderExtractor, isPlainObject, unflattenJson } from '../i18n.js';
 import { readLocaleFile, writeLocaleFile } from '../fileio.js';
@@ -93,6 +94,21 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
     }
   }
 
+  // progress bars
+  const totalToTranslateByFile: Record<string, number> = {};
+  for (const tf of cfg.targets) {
+    // count quickly using report issue set if mode=all, else approximate from base keys later
+    totalToTranslateByFile[tf] = 0;
+  }
+
+  let totalPlanned = 0;
+  let totalDone = 0;
+  const totalBar = new cliProgress.SingleBar({
+    format: 'TOTAL |{bar}| {value}/{total} ({percentage}%)',
+    hideCursor: true,
+  }, cliProgress.Presets.shades_classic);
+  // we will start it once we know the total
+
   for (const targetFile of cfg.targets) {
     let targetJson: any;
     let targetMeta: any;
@@ -135,6 +151,20 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       console.log(chalk.gray(`No items to translate for ${targetFile} (mode=${opts.mode}).`));
       continue;
     }
+
+    // initialize total bar when first file is processed
+    totalPlanned += items.length;
+    if (!totalBar.isActive) {
+      totalBar.start(totalPlanned, totalDone);
+    } else {
+      totalBar.setTotal(totalPlanned);
+    }
+
+    const fileBar = new cliProgress.SingleBar({
+      format: `${path.basename(targetFile)} |{bar}| {value}/{total} ({percentage}%)`,
+      hideCursor: true,
+    }, cliProgress.Presets.shades_classic);
+    fileBar.start(items.length, 0);
 
     const fromLang = tc.sourceLang ?? inferSourceLang(cfg.base) ?? 'auto';
     const toLang = tc.targetLang ?? inferTargetLang(targetFile) ?? 'auto';
@@ -209,13 +239,14 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
         }
 
         done++;
-        const keyLabel = chalk.gray(k);
-        process.stdout.write(chalk.green(`\r  ${done}/${items.length}`) + ' ' + keyLabel + ' '.repeat(10));
+        fileBar.update(done);
+        totalDone++;
+        totalBar.update(totalDone);
       }
 
       if (delayMs) await sleep(delayMs);
     });
-    process.stdout.write('\n');
+    fileBar.stop();
 
     // write
     const outObj = effectiveKeyStyle === 'nested' ? unflattenJson(targetFlat) : targetFlat;
@@ -236,4 +267,7 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       console.log(chalk.gray(`Next: re-run translate to process remaining items, or increase translate.maxItems in config.`));
     }
   }
+  if (totalBar.isActive) totalBar.stop();
 }
+
+// ensure total bar stops
