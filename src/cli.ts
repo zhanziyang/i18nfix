@@ -9,6 +9,7 @@ import { runCheck } from './commands/check.js';
 import { runFix } from './commands/fix.js';
 import { runTranslate } from './commands/translate.js';
 import { runConfigure } from './commands/configure.js';
+import { runNew } from './commands/new.js';
 
 const program = new Command();
 program
@@ -32,6 +33,20 @@ program
   .action(async (opts) => {
     const p = await runConfigure(opts.config);
     console.log(chalk.green(`Wrote config: ${p}`));
+  });
+
+program
+  .command('new')
+  .description('Create new target locale files for additional languages (copy base values)')
+  .option('-c, --config <path>', 'config path (default: i18nfix.config.json)')
+  .option('--langs <langs>', 'comma-separated language codes to create (e.g. fr,ja,zh)')
+  .option('--skip-existing', 'skip creating files that already exist', true)
+  .option('--no-update-config', 'do not add created/existing targets into config')
+  .action(async (opts) => {
+    const configPath = resolveConfigPath(opts.config);
+    const cfg0 = await loadConfig(configPath);
+    const langs = (opts.langs ?? '').split(',').map((s: string) => s.trim()).filter(Boolean);
+    await runNew(cfg0, { langs, skipExisting: true, updateConfig: Boolean(opts.updateConfig), configPath });
   });
 
 function applyCommonOptions(cmd: Command) {

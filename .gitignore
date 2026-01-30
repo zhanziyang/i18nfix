@@ -8,3 +8,4 @@ fixed/
 .env
 *.lock
 .tmp-test/
+.tmp-new/
