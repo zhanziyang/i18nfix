@@ -46,7 +46,18 @@ npx i18nfix config
 
 This writes `i18nfix.config.json` in your project root.
 
-### 3) Add npm scripts
+### 3) (Optional) Create new language files
+
+If you currently only have one language and want to scaffold additional languages:
+
+```bash
+# create ja.ts / fr.ts (skips existing files)
+i18nfix new --langs fr,ja
+```
+
+By default, i18nfix will follow an existing filename pattern if present (e.g. `en.ts` → `fr.ts`).
+
+### 4) Add npm scripts
 
 Add to your project's `package.json`:
 
