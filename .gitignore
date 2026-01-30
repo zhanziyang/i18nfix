@@ -7,3 +7,4 @@ i18nfix.config.json
 fixed/
 .env
 *.lock
+.tmp-test/
