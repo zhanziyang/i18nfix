@@ -138,7 +138,9 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       );
 
       targetFlat[k] = res.text;
-      process.stdout.write(chalk.green(`\r  ${i + 1}/${items.length}`));
+      // show progress + current key
+      const keyLabel = chalk.gray(k);
+      process.stdout.write(chalk.green(`\r  ${i + 1}/${items.length}`) + ' ' + keyLabel + ' '.repeat(10));
       if (delayMs) await sleep(delayMs);
     }
     process.stdout.write('\n');
