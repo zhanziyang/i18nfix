@@ -54,6 +54,18 @@ node dist/cli.js check --json
 node dist/cli.js fix --out-dir fixed --translate --translate-out-dir translated
 ```
 
+Fix and translate into the **same directory** (e.g. `dist-locales/`):
+
+```bash
+node dist/cli.js fix --out-dir dist-locales --translate --translate-out-dir dist-locales
+```
+
+Fix and translate **in-place** (overwrite your target files):
+
+```bash
+node dist/cli.js fix --in-place --translate
+```
+
 Verbose (prints BASE/TRNS for each translated key):
 
 ```bash
