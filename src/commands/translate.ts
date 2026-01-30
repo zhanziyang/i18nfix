@@ -188,13 +188,20 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       const payload = batch.map((k) => ({ key: k, text: String(baseFlat[k]) }));
 
       // first try batch
-      let result: Record<string, string> = {};
+      let result: { map: Record<string, string>; duplicates: string[]; extras: string[] } = { map: {}, duplicates: [], extras: [] };
       try {
         result = await translateBatch(
           { provider: tc.provider, apiKey, model: tc.model, baseUrl: tc.baseUrl },
           payload,
           { sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang }
         );
+        // strict-ish structure warnings
+        if (result.extras.length) {
+          console.warn(chalk.yellow(`\nBatch returned extra keys (ignored): ${result.extras.slice(0, 5).join(', ')}${result.extras.length > 5 ? '…' : ''}`));
+        }
+        if (result.duplicates.length) {
+          console.warn(chalk.yellow(`\nBatch returned duplicate keys: ${result.duplicates.slice(0, 5).join(', ')}${result.duplicates.length > 5 ? '…' : ''}`));
+        }
       } catch (e: any) {
         console.warn(chalk.yellow(`\nBatch translate failed; falling back to single-item mode for this batch. (${e?.message ?? e})`));
       }
@@ -203,7 +210,7 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
         const baseText = String(baseFlat[k]);
         // cache hit
         const cached = cacheEnabled ? cache.get({ provider: tc.provider, model: tc.model, sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang, text: baseText }) : undefined;
-        let translated = cached ?? result[k];
+        let translated = cached ?? result.map[k];
 
         // validate placeholders; if invalid or missing, retry single-item
         if (!translated || !translated.trim()) {
@@ -220,8 +227,8 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
         } else {
           // placeholder mismatch fallback
           try {
-            const { placeholderOk } = await import('../providers/validate.js');
-            const ok = placeholderOk(placeholderStyle === 'auto' ? 'brace' : (placeholderStyle as any), baseText, translated);
+            const { formatOk } = await import('../providers/validate.js');
+            const ok = formatOk(placeholderStyle === 'auto' ? 'brace' : (placeholderStyle as any), baseText, translated);
             if (!ok) {
               const r = await withRetry(() => doTranslate(
                 { provider: tc.provider, apiKey, model: tc.model, baseUrl: tc.baseUrl },

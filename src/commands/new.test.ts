@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { runNew } from './new.js';
 
-const tmp = path.join(process.cwd(), '.tmp-new');
+const tmp = path.join(process.cwd(), '.tmp-new', String(process.pid));
 
 describe('new command', () => {
   it('creates new targets following existing pattern and skips existing', async () => {

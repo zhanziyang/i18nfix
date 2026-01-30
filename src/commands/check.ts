@@ -31,7 +31,8 @@ export async function runCheck(cfg: I18nFixConfig, opts?: { failFast?: boolean }
   try {
     baseJson = (await readLocaleFile(cfg.base)).data;
   } catch (e: any) {
-    const msg = `Failed to read base locale file: ${e?.message ?? e}`;
+    const { formatErr } = await import('../errors.js');
+    const msg = `Failed to read base locale file: ${formatErr(e)}`;
     addIssue(report, { type: 'parse_error', file: cfg.base, message: msg });
     if (opts?.failFast) throw new Error(msg);
     return report;
@@ -61,7 +62,8 @@ export async function runCheck(cfg: I18nFixConfig, opts?: { failFast?: boolean }
     try {
       targetJson = (await readLocaleFile(targetFile)).data;
     } catch (e: any) {
-      const msg = `Failed to read target locale file: ${e?.message ?? e}`;
+      const { formatErr } = await import('../errors.js');
+      const msg = `Failed to read target locale file: ${formatErr(e)}`;
       addIssue(report, { type: 'parse_error', file: targetFile, message: msg });
       if (opts?.failFast) throw new Error(msg);
       continue;

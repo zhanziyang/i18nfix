@@ -1,9 +1,14 @@
-import { TranslateOptions, TranslateRequest, TranslateResponse } from './types.js';
+import { TranslateOptions } from './types.js';
 
 export interface BatchItem {
   key: string;
   text: string;
-  placeholders?: string[];
+}
+
+export interface BatchResult {
+  map: Record<string, string>;
+  duplicates: string[];
+  extras: string[];
 }
 
 function buildSystemPrompt(sourceLang?: string, targetLang?: string) {
@@ -14,7 +19,7 @@ export async function translateBatchOpenAI(
   opts: TranslateOptions,
   items: BatchItem[],
   ctx: { sourceLang?: string; targetLang?: string }
-): Promise<Record<string, string>> {
+): Promise<BatchResult> {
   const baseUrl = opts.baseUrl ?? 'https://api.openai.com/v1';
   const url = `${baseUrl.replace(/\/$/, '')}/chat/completions`;
 
@@ -58,10 +63,22 @@ export async function translateBatchOpenAI(
   const arr = parsed?.items;
   if (!Array.isArray(arr)) throw new Error('Batch output missing items array');
 
-  const out: Record<string, string> = {};
+  const inputKeySet = new Set(items.map((i) => i.key));
+  const seen = new Set<string>();
+  const duplicates: string[] = [];
+  const extras: string[] = [];
+  const map: Record<string, string> = {};
+
   for (const it of arr) {
     if (!it || typeof it.key !== 'string' || typeof it.text !== 'string') continue;
-    out[it.key] = it.text;
+    if (seen.has(it.key)) duplicates.push(it.key);
+    seen.add(it.key);
+    if (!inputKeySet.has(it.key)) {
+      extras.push(it.key);
+      continue;
+    }
+    map[it.key] = it.text;
   }
-  return out;
+
+  return { map, duplicates, extras };
 }
