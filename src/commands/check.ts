@@ -9,6 +9,7 @@ import {
   isPlainObject,
 } from '../i18n.js';
 import { readLocaleFile } from '../fileio.js';
+import fs from 'node:fs/promises';
 
 function uniqSorted(arr: string[]) {
   return Array.from(new Set(arr)).sort();
@@ -31,8 +32,13 @@ export async function runCheck(cfg: I18nFixConfig, opts?: { failFast?: boolean }
   try {
     baseJson = (await readLocaleFile(cfg.base)).data;
   } catch (e: any) {
-    const { formatErr } = await import('../errors.js');
-    const msg = `Failed to read base locale file: ${formatErr(e)}`;
+    const { formatErrWithSnippet } = await import('../errors.js');
+    // try to include a snippet for JS/TS parse errors
+    let raw: string | undefined;
+    try {
+      raw = await fs.readFile(cfg.base, 'utf8');
+    } catch {}
+    const msg = `Failed to read base locale file: ${formatErrWithSnippet(e, raw)}`;
     addIssue(report, { type: 'parse_error', file: cfg.base, message: msg });
     if (opts?.failFast) throw new Error(msg);
     return report;

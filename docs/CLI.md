@@ -13,6 +13,11 @@ These options are shared by most commands:
 - `--targets <paths>`: override targets (comma-separated)
 - `--key-style <auto|nested|flat>`: override key style
 - `--placeholder-style <auto|brace|mustache|printf|ruby|list>`: placeholder validation style (comma-separated list supported)
+
+Translation output validation (default on in batch + fallback):
+- placeholders must match
+- HTML tags must be preserved
+- basic Markdown markers must be preserved
 - `--ignore-keys <keys>`: ignore keys (comma-separated)
 - `--fail-fast`: stop immediately on first parse error
 
