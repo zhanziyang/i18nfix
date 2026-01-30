@@ -1,5 +1,6 @@
 import { TranslateOptions, TranslateRequest, TranslateResponse } from './types.js';
 import { translateOpenAICompatible } from './openaiCompatible.js';
+import { translateBatchOpenAI } from './openaiBatch.js';
 import { translateClaude } from './claude.js';
 import { translateGemini } from './gemini.js';
 
@@ -16,4 +17,21 @@ export async function translate(opts: TranslateOptions, req: TranslateRequest): 
     default:
       throw new Error(`Unsupported provider: ${(opts as any).provider}`);
   }
+}
+
+export async function translateBatch(
+  opts: TranslateOptions,
+  items: { key: string; text: string }[],
+  ctx: { sourceLang?: string; targetLang?: string }
+): Promise<Record<string, string>> {
+  if (opts.provider === 'openai' || opts.provider === 'openrouter') {
+    return translateBatchOpenAI(opts, items as any, ctx);
+  }
+  // fallback: per-item translate
+  const out: Record<string, string> = {};
+  for (const it of items) {
+    const r = await translate(opts, { text: it.text, sourceLang: ctx.sourceLang, targetLang: ctx.targetLang });
+    out[it.key] = r.text;
+  }
+  return out;
 }

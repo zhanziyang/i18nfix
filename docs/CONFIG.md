@@ -106,6 +106,16 @@ Delay between requests (ms). Useful for rate limits.
 
 Default: `0`
 
+### `translate.batchSize` (number, optional)
+Batch size per LLM request.
+
+Default: `25` (OpenAI often works well with 25–50)
+
+### `translate.concurrency` (number, optional)
+How many LLM requests to run in parallel.
+
+Default: `3`
+
 ---
 
 ## Full example

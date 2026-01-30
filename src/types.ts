@@ -16,6 +16,10 @@ export interface TranslateConfig {
   targetLang?: string;
   /** Max strings per run (safety). */
   maxItems?: number;
+  /** Batch size per LLM request (performance). */
+  batchSize?: number;
+  /** Concurrency of LLM requests (performance). */
+  concurrency?: number;
   /** Delay between requests (ms). */
   delayMs?: number;
 }

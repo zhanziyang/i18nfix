@@ -82,6 +82,8 @@ Then add a `translate` section to `i18nfix.config.json`:
     "apiKeyEnv": "OPENAI_API_KEY",
     "model": "gpt-4o-mini",
     "maxItems": 200,
+    "batchSize": 50,
+    "concurrency": 3,
     "delayMs": 0
   }
 }

@@ -3,9 +3,10 @@ import chalk from 'chalk';
 import { I18nFixConfig, TranslateConfig } from '../types.js';
 import { detectKeyStyle, flattenJson, getPlaceholderExtractor, isPlainObject, unflattenJson } from '../i18n.js';
 import { readLocaleFile, writeLocaleFile } from '../fileio.js';
-import { translate as doTranslate } from '../providers/index.js';
+import { translateBatch } from '../providers/index.js';
 import { runCheck } from './check.js';
 import { sleep } from '../providers/util.js';
+import { mapLimit } from '../providers/pool.js';
 
 
 function inferSourceLang(filePath: string): string | undefined {
@@ -58,6 +59,8 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
   const apiKey = getApiKey(tc);
   const delayMs = tc.delayMs ?? 0;
   const maxItems = tc.maxItems ?? 200;
+  const batchSize = tc.batchSize ?? 25;
+  const concurrency = tc.concurrency ?? 3;
 
   let baseJson: any;
   baseJson = (await readLocaleFile(cfg.base)).data;
@@ -136,37 +139,40 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
     }
     console.log(chalk.bold(`Translating ${items.length} items for ${targetFile} (mode=${opts.mode})...`));
 
-    for (let i = 0; i < items.length; i++) {
-      const k = items[i]!;
-      const baseText = String(baseFlat[k]);
-      const hints = extractor(baseText);
-      const res = await doTranslate(
-        {
-          provider: tc.provider,
-          apiKey,
-          model: tc.model,
-          baseUrl: tc.baseUrl,
-        },
-        {
-          text: baseText,
-          sourceLang: fromLang === "auto" ? undefined : fromLang,
-          targetLang: toLang,
-          placeholderHints: hints,
-        }
+    const batches: string[][] = [];
+    for (let i = 0; i < items.length; i += batchSize) {
+      batches.push(items.slice(i, i + batchSize));
+    }
+
+    let done = 0;
+
+    await mapLimit(batches, concurrency, async (batch) => {
+      const payload = batch.map((k) => ({ key: k, text: String(baseFlat[k]) }));
+      const result = await translateBatch(
+        { provider: tc.provider, apiKey, model: tc.model, baseUrl: tc.baseUrl },
+        payload,
+        { sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang }
       );
 
-      targetFlat[k] = res.text;
-      if (opts.printText) {
-        console.log();
-        console.log(chalk.cyan(k));
-        console.log(chalk.gray(`BASE: ${baseText}`));
-        console.log(chalk.green(`TRNS: ${res.text}`));
+      for (const k of batch) {
+        const baseText = String(baseFlat[k]);
+        const translated = result[k];
+        if (typeof translated === 'string' && translated.trim()) {
+          targetFlat[k] = translated;
+          if (opts.printText) {
+            console.log();
+            console.log(chalk.cyan(k));
+            console.log(chalk.gray(`BASE: ${baseText}`));
+            console.log(chalk.green(`TRNS: ${translated}`));
+          }
+        }
+        done++;
+        const keyLabel = chalk.gray(k);
+        process.stdout.write(chalk.green(`\r  ${done}/${items.length}`) + ' ' + keyLabel + ' '.repeat(10));
       }
-      // show progress + current key
-      const keyLabel = chalk.gray(k);
-      process.stdout.write(chalk.green(`\r  ${i + 1}/${items.length}`) + ' ' + keyLabel + ' '.repeat(10));
+
       if (delayMs) await sleep(delayMs);
-    }
+    });
     process.stdout.write('\n');
 
     // write
