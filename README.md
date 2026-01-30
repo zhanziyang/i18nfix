@@ -1,11 +1,11 @@
 # i18nfix
 
-A small CLI to **check** and **fix** i18n JSON locale files:
-- missing keys
-- extra keys
-- empty values
-- possibly untranslated values (same as base)
-- placeholder mismatches (`{name}`, `{{name}}`, `%s` ...)
+A CLI to **check**, **fix**, and **translate** i18n JSON locale files.
+
+What it can do:
+- Detect issues: missing keys, extra keys, empty values, possibly-untranslated values, placeholder mismatches
+- Fix structure: add missing keys (optionally fill with base), optionally remove extras
+- Translate only the *problematic* keys using an LLM provider (OpenAI / Claude / Gemini / OpenRouter)
 
 > Status: MVP / work in progress.
 
@@ -15,51 +15,24 @@ A small CLI to **check** and **fix** i18n JSON locale files:
 
 ## Install
 
-### From source
-
 ```bash
 git clone https://github.com/zhanziyang/i18nfix.git
 cd i18nfix
 npm install
 npm run build
 
-# run directly
 node dist/cli.js --help
 ```
 
-## Quick start
+## Quick start (recommended workflow)
 
-### Try the included example
-
-```bash
-# from repo root
-node dist/cli.js check --config examples/i18nfix.config.json
-
-# write fixed file to examples/fixed
-node dist/cli.js fix --config examples/i18nfix.config.json --out-dir examples/fixed
-
-# or overwrite the target in-place (be careful)
-# node dist/cli.js fix --config examples/i18nfix.config.json --in-place
-```
-
-What this example demonstrates:
-- `zh.json` is missing `app.cta` (will be added)
-- `home.subtitle` is identical to base (flagged as possibly untranslated)
-- placeholder mismatch: `{name}` vs `{username}`
-- printf mismatch: `%s` vs `%d`
-- extra key: `app.extraKey` (only reported; fix can remove if you choose)
-
----
-
-
-
-### 1) Create or update config
+### 1) Create/update config (Q&A)
 
 ```bash
 # create
 node dist/cli.js init
 
-# update via Q&A (loads existing config and rewrites it)
+# update later via Q&A
 node dist/cli.js config
 ```
 
@@ -69,36 +42,45 @@ This writes `i18nfix.config.json` in the current directory.
 
 ```bash
 node dist/cli.js check
-# JSON output
+# JSON report
 node dist/cli.js check --json
 ```
 
-### 3) Fix (and optionally translate)
-
-Write fixed files into a directory:
+### 3) Fix + Translate (one command)
 
 ```bash
-node dist/cli.js fix --out-dir fixed
-```
-
-Fix + translate in one go (recommended flow):
-
-```bash
-# prints from/to languages by default
-node dist/cli.js fix --in-place --translate
-```
-
-Or write translated output to a separate directory:
-
-```bash
+# fix output to ./fixed
+# then translate output to ./translated
 node dist/cli.js fix --out-dir fixed --translate --translate-out-dir translated
 ```
 
+Verbose (prints BASE/TRNS for each translated key):
+
+```bash
+node dist/cli.js fix --out-dir fixed --translate --translate-out-dir translated -v
+```
+
+## Example included
+
+Try the included example files:
+
+```bash
+node dist/cli.js check --config examples/i18nfix.config.json
+node dist/cli.js fix --config examples/i18nfix.config.json --out-dir examples/fixed --translate --translate-out-dir examples/translated
+```
+
+What the example demonstrates:
+- `zh.json` is missing `app.cta` (will be added)
+- `home.subtitle` is identical to base (flagged as possibly untranslated)
+- placeholder mismatch: `{name}` vs `{username}`
+- printf mismatch: `%s` vs `%d`
+- extra key: `app.extraKey`
+
 ## Config file
 
-Default config filename: `i18nfix.config.json`
+Default filename: `i18nfix.config.json`
 
-Example:
+Minimal example:
 
 ```json
 {
@@ -111,19 +93,11 @@ Example:
 }
 ```
 
-## CLI options (override config)
-
-- `--base <path>`
-- `--targets <comma-separated>`
-- `--key-style <auto|nested|flat>`
-- `--placeholder-style <auto|brace|mustache|printf>` (comma-separated list supported)
-- `--ignore-keys <comma-separated>`
-
 ## Translate (LLM providers)
 
-> Keys should be provided via environment variables (recommended). i18nfix will also auto-load a local `.env` file. Do **not** commit keys to git.
+Keys should be provided via environment variables (recommended). i18nfix will also auto-load a local `.env` file.
 
-Add a `translate` section to your `i18nfix.config.json`:
+Example:
 
 ```json
 {
@@ -139,28 +113,21 @@ Add a `translate` section to your `i18nfix.config.json`:
 
 Supported providers:
 - `openai` (env: `OPENAI_API_KEY`)
-- `openrouter` (env: `OPENROUTER_API_KEY`, model example: `anthropic/claude-3.5-sonnet`)
-- `claude` (Anthropic API, env: `ANTHROPIC_API_KEY`)
-- `gemini` (Google, env: `GEMINI_API_KEY`)
+- `openrouter` (env: `OPENROUTER_API_KEY`) — OpenAI-compatible endpoint
+- `claude` (env: `ANTHROPIC_API_KEY`)
+- `gemini` (env: `GEMINI_API_KEY`)
 
-Run:
+Language handling:
+- `targetLang` is inferred from the target filename when not provided (e.g. `zh.json`, `ja.json`, `fr-FR.json` → `zh`, `ja`, `fr`).
+- from/to languages are printed by default during translation. Use `translate --no-show-langs` to hide.
 
-If `translate.targetLang` is not set, i18nfix will try to infer it from the target filename (e.g. `zh.json`, `ja.json`, `fr-FR.json`).
+## CLI notes
 
-```bash
-# translate only problematic keys (default: all)
-node dist/cli.js translate --mode missing --out-dir translated
-
-# translate empty values
-node dist/cli.js translate --mode empty --in-place
-
-# translate values equal to base (needs treatSameAsBaseAsUntranslated=true)
-node dist/cli.js translate --mode untranslated --out-dir translated
-
-# translate ONLY keys that have issues (missing/empty/untranslated/placeholder mismatch)
-# translate ONLY keys that have issues (missing/empty/untranslated/placeholder mismatch)
-node dist/cli.js translate --mode all --out-dir translated
-```
+- `translate --mode`:
+  - default is `all` (only keys with issues)
+  - `missing` / `empty` / `untranslated` are narrower modes
+- `maxItems`:
+  - if there are more than `maxItems` keys to translate, it will translate the first batch and print how many remain.
 
 ## Roadmap
 
