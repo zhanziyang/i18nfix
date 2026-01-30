@@ -111,6 +111,9 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
   .option('--out-dir <dir>', 'write fixed files to a directory')
   .option('--keep-extra-keys', 'do not remove extra keys', true)
   .option('--fill-missing-with-base', 'fill missing keys with base value (otherwise empty string)', false)
+  .option('--translate', 'run translation after fix (requires translate config)', false)
+  .option('--translate-mode <all|missing|empty|untranslated>', 'what to translate after fix', 'all')
+  .option('--translate-out-dir <dir>', 'write translated files to a directory (overrides fix out-dir for translation)')
   .action(async (opts) => {
     const configPath = resolveConfigPath(opts.config);
     const cfg0 = await loadConfig(configPath);
@@ -136,7 +139,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
 
 program
   .command('translate')
-  .description('Translate missing/empty/untranslated strings using an LLM provider (openai/claude/gemini/openrouter)')
+  .description('Translate strings using an LLM provider (advanced; prefer: fix --translate)')
   .allowExcessArguments(false);
 
 applyCommonOptions(program.commands.find((c) => c.name() === 'translate')!)

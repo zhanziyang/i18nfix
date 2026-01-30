@@ -73,7 +73,7 @@ node dist/cli.js check
 node dist/cli.js check --json
 ```
 
-### 3) Fix
+### 3) Fix (and optionally translate)
 
 Write fixed files into a directory:
 
@@ -81,10 +81,17 @@ Write fixed files into a directory:
 node dist/cli.js fix --out-dir fixed
 ```
 
-Overwrite in place:
+Fix + translate in one go (recommended flow):
 
 ```bash
-node dist/cli.js fix --in-place
+# translates only problematic keys by default
+node dist/cli.js fix --in-place --translate
+```
+
+Or write translated output to a separate directory:
+
+```bash
+node dist/cli.js fix --out-dir fixed --translate --translate-out-dir translated
 ```
 
 ## Config file
