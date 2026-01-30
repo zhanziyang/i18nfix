@@ -121,7 +121,7 @@ Example:
 
 ## Translate (LLM providers)
 
-> Keys should be provided via environment variables (recommended). Do **not** commit keys to git.
+> Keys should be provided via environment variables (recommended). i18nfix will also auto-load a local `.env` file. Do **not** commit keys to git.
 
 Add a `translate` section to your `i18nfix.config.json`:
 

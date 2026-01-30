@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import dotenv from 'dotenv';
+dotenv.config();
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { loadConfig, mergeConfig, normalizeKeyStyle, normalizePlaceholderStyle, resolveConfigPath } from './config.js';
