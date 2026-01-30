@@ -11,8 +11,8 @@ export interface FixOptions {
   fillMissingWithBase: boolean;
 }
 
-export async function runFix(cfg: I18nFixConfig, opts: FixOptions): Promise<Report> {
-  const report = await runCheck(cfg);
+export async function runFix(cfg: I18nFixConfig, opts: FixOptions & { failFast?: boolean }): Promise<Report> {
+  const report = await runCheck(cfg, { failFast: opts.failFast });
 
   let baseJson;
   try {

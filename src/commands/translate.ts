@@ -29,6 +29,7 @@ export interface TranslateRunOptions {
   mode: 'missing' | 'empty' | 'untranslated' | 'all';
   showLangs?: boolean;
   printText?: boolean;
+  failFast?: boolean;
 }
 
 
@@ -75,7 +76,7 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
 
   const modeKeysByFile: Map<string, Set<string>> = new Map();
   if (opts.mode === 'all') {
-    const report = await runCheck(cfg);
+    const report = await runCheck(cfg, { failFast: opts.failFast });
     for (const issue of report.issues) {
       if (!issue.key) continue;
       if (issue.type === 'missing_key' || issue.type === 'empty_value' || issue.type === 'untranslated' || issue.type === 'placeholder_mismatch') {

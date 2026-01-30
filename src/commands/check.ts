@@ -24,14 +24,16 @@ function eqArr(a: string[], b: string[]) {
   return true;
 }
 
-export async function runCheck(cfg: I18nFixConfig): Promise<Report> {
+export async function runCheck(cfg: I18nFixConfig, opts?: { failFast?: boolean }): Promise<Report> {
   const report = makeEmptyReport(cfg.base, cfg.targets);
 
   let baseJson;
   try {
     baseJson = (await readLocaleFile(cfg.base)).data;
   } catch (e: any) {
-    addIssue(report, { type: 'parse_error', file: cfg.base, message: `Failed to read base locale file: ${e?.message ?? e}` });
+    const msg = `Failed to read base locale file: ${e?.message ?? e}`;
+    addIssue(report, { type: 'parse_error', file: cfg.base, message: msg });
+    if (opts?.failFast) throw new Error(msg);
     return report;
   }
 
@@ -59,7 +61,9 @@ export async function runCheck(cfg: I18nFixConfig): Promise<Report> {
     try {
       targetJson = (await readLocaleFile(targetFile)).data;
     } catch (e: any) {
-      addIssue(report, { type: 'parse_error', file: targetFile, message: `Failed to read target locale file: ${e?.message ?? e}` });
+      const msg = `Failed to read target locale file: ${e?.message ?? e}`;
+      addIssue(report, { type: 'parse_error', file: targetFile, message: msg });
+      if (opts?.failFast) throw new Error(msg);
       continue;
     }
 

@@ -57,3 +57,8 @@ export interface Report {
     parseErrors: number;
   };
 }
+
+
+export interface RunOptions {
+  failFast?: boolean;
+}

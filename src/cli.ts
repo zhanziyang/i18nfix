@@ -40,8 +40,9 @@ function applyCommonOptions(cmd: Command) {
     .option('--base <path>', 'override base locale path')
     .option('--targets <paths>', 'override targets (comma-separated)')
     .option('--key-style <auto|nested|flat>', 'override key style')
-    .option('--placeholder-style <auto|brace|mustache|printf|list>', 'override placeholder style (comma-separated supported)')
-    .option('--ignore-keys <keys>', 'ignore keys (comma-separated)');
+    .option('--placeholder-style <auto|brace|mustache|printf|ruby|list>', 'override placeholder style (comma-separated supported)')
+    .option('--ignore-keys <keys>', 'ignore keys (comma-separated)')
+    .option('--fail-fast', 'stop immediately on first parse error', false);
 }
 
 program
@@ -75,7 +76,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'check')!)
       ignoreKeys: opts.ignoreKeys ? opts.ignoreKeys.split(',').map((s: string) => s.trim()).filter(Boolean) : undefined,
     });
 
-    const report = await runCheck(cfg);
+    const report = await runCheck(cfg, { failFast: Boolean(opts.failFast) });
     if (opts.json) {
       console.log(JSON.stringify(report, null, 2));
       process.exit(report.summary.parseErrors > 0 ? 2 : report.issues.length ? 1 : 0);
@@ -134,6 +135,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
       outDir: opts.outDir,
       keepExtraKeys: !Boolean(opts.dropExtraKeys),
       fillMissingWithBase: Boolean(opts.fillMissingWithBase),
+      failFast: Boolean(opts.failFast),
     });
 
     console.log(chalk.green('Done.'));
@@ -146,6 +148,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
         mode: opts.translateMode,
         showLangs: true,
         printText: Boolean(opts.verbose),
+        failFast: Boolean(opts.failFast),
       });
     }
 
@@ -180,6 +183,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'translate')!)
       mode: opts.mode,
       showLangs: Boolean(opts.showLangs),
       printText: Boolean(opts.verbose),
+      failFast: Boolean(opts.failFast),
     });
   });
 

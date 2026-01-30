@@ -14,6 +14,7 @@ These options are shared by most commands:
 - `--key-style <auto|nested|flat>`: override key style
 - `--placeholder-style <auto|brace|mustache|printf|ruby|list>`: placeholder validation style (comma-separated list supported)
 - `--ignore-keys <keys>`: ignore keys (comma-separated)
+- `--fail-fast`: stop immediately on first parse error
 
 Precedence:
 
