@@ -4,6 +4,7 @@ import cliProgress from 'cli-progress';
 import { I18nFixConfig, TranslateConfig } from '../types.js';
 import { detectKeyStyle, flattenJson, getPlaceholderExtractor, isPlainObject, unflattenJson } from '../i18n.js';
 import { readLocaleFile, writeLocaleFile } from '../fileio.js';
+import { TranslationCache } from '../cache.js';
 import { translate as doTranslate, translateBatch } from '../providers/index.js';
 import { runCheck } from './check.js';
 import { sleep } from '../providers/util.js';
@@ -65,6 +66,9 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
   const concurrency = tc.concurrency ?? 3;
   const retryCount = tc.retryCount ?? 3;
   const retryBaseDelayMs = tc.retryBaseDelayMs ?? 400;
+  const cacheEnabled = tc.cache ?? true;
+  const cache = new TranslationCache(process.cwd());
+  if (cacheEnabled) await cache.load();
 
   let baseJson: any;
   baseJson = (await readLocaleFile(cfg.base)).data;
@@ -197,7 +201,9 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
 
       for (const k of batch) {
         const baseText = String(baseFlat[k]);
-        let translated = result[k];
+        // cache hit
+        const cached = cacheEnabled ? cache.get({ provider: tc.provider, model: tc.model, sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang, text: baseText }) : undefined;
+        let translated = cached ?? result[k];
 
         // validate placeholders; if invalid or missing, retry single-item
         if (!translated || !translated.trim()) {
@@ -230,6 +236,9 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
 
         if (translated && translated.trim()) {
           targetFlat[k] = translated;
+          if (cacheEnabled && !cached) {
+            await cache.set({ provider: tc.provider, model: tc.model, sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang, text: baseText }, translated);
+          }
           if (opts.printText) {
             console.log();
             console.log(chalk.cyan(k));

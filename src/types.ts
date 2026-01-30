@@ -24,6 +24,8 @@ export interface TranslateConfig {
   retryCount?: number;
   /** Base retry delay (ms) for backoff (stability). */
   retryBaseDelayMs?: number;
+  /** Enable translation cache (.i18nfix-cache/translations.jsonl). */
+  cache?: boolean;
   /** Delay between requests (ms). */
   delayMs?: number;
 }
