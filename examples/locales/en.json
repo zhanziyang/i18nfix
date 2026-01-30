@@ -1,0 +1,12 @@
+{
+  "app": {
+    "title": "i18nfix demo",
+    "welcome": "Hello, {name}!",
+    "cta": "Start now",
+    "items": "You have %s items"
+  },
+  "home": {
+    "headline": "Build faster",
+    "subtitle": "Fix missing keys, placeholders, and untranslated strings"
+  }
+}

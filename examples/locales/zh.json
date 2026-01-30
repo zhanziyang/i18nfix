@@ -1,0 +1,12 @@
+{
+  "app": {
+    "title": "i18nfix demo",
+    "welcome": "你好，{username}!", 
+    "items": "你有 %d 个项目",
+    "extraKey": "这个 key 在 base 里不存在"
+  },
+  "home": {
+    "headline": "Build faster",
+    "subtitle": "Fix missing keys, placeholders, and untranslated strings"
+  }
+}

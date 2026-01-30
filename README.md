@@ -29,6 +29,30 @@ node dist/cli.js --help
 
 ## Quick start
 
+### Try the included example
+
+```bash
+# from repo root
+node dist/cli.js check --config examples/i18nfix.config.json
+
+# write fixed file to examples/fixed
+node dist/cli.js fix --config examples/i18nfix.config.json --out-dir examples/fixed
+
+# or overwrite the target in-place (be careful)
+# node dist/cli.js fix --config examples/i18nfix.config.json --in-place
+```
+
+What this example demonstrates:
+- `zh.json` is missing `app.cta` (will be added)
+- `home.subtitle` is identical to base (flagged as possibly untranslated)
+- placeholder mismatch: `{name}` vs `{username}`
+- printf mismatch: `%s` vs `%d`
+- extra key: `app.extraKey` (only reported; fix can remove if you choose)
+
+---
+
+
+
 ### 1) Create config
 
 ```bash
