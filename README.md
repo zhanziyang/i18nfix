@@ -124,8 +124,6 @@ Add a `translate` section to your `i18nfix.config.json`:
     "provider": "openai",
     "apiKeyEnv": "OPENAI_API_KEY",
     "model": "gpt-4o-mini",
-    "sourceLang": "en",
-    "targetLang": "zh",
     "delayMs": 0,
     "maxItems": 200
   }
@@ -139,6 +137,8 @@ Supported providers:
 - `gemini` (Google, env: `GEMINI_API_KEY`)
 
 Run:
+
+If `translate.targetLang` is not set, i18nfix will try to infer it from the target filename (e.g. `zh.json`, `ja.json`, `fr-FR.json`).
 
 ```bash
 # translate missing keys (default)

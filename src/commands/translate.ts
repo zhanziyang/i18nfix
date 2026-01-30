@@ -6,6 +6,15 @@ import { detectKeyStyle, flattenJson, getPlaceholderExtractor, isPlainObject, re
 import { translate as doTranslate } from '../providers/index.js';
 import { sleep } from '../providers/util.js';
 
+
+function inferTargetLang(filePath: string): string | undefined {
+  const base = path.basename(filePath);
+  // common patterns: zh.json, zh-CN.json, pt_BR.json, en-US.json
+  const m = base.match(/^([a-zA-Z]{2,3})([-_][a-zA-Z]{2,4})?\./);
+  if (!m) return undefined;
+  return m[1]!.toLowerCase();
+}
+
 export interface TranslateRunOptions {
   inPlace: boolean;
   outDir?: string;
@@ -99,7 +108,7 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
         {
           text: baseText,
           sourceLang: tc.sourceLang,
-          targetLang: tc.targetLang,
+          targetLang: tc.targetLang ?? inferTargetLang(targetFile),
           placeholderHints: hints,
         }
       );

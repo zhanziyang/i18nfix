@@ -108,20 +108,6 @@ export async function runConfigure(configPath?: string) {
       when: (a) => a.enableTranslate,
     },
     {
-      type: 'input',
-      name: 'sourceLang',
-      message: 'Source language hint (optional, e.g. en):',
-      default: current?.translate?.sourceLang ?? '',
-      when: (a) => a.enableTranslate,
-    },
-    {
-      type: 'input',
-      name: 'targetLang',
-      message: 'Target language hint (optional, e.g. zh):',
-      default: current?.translate?.targetLang ?? '',
-      when: (a) => a.enableTranslate,
-    },
-    {
       type: 'number',
       name: 'maxItems',
       message: 'Max strings per run (safety):',
@@ -149,9 +135,7 @@ export async function runConfigure(configPath?: string) {
           provider: ans.provider,
           apiKeyEnv: ans.apiKeyEnv || undefined,
           model: ans.model || undefined,
-          sourceLang: ans.sourceLang || undefined,
-          targetLang: ans.targetLang || undefined,
-          maxItems: typeof ans.maxItems === 'number' ? ans.maxItems : undefined,
+                    maxItems: typeof ans.maxItems === 'number' ? ans.maxItems : undefined,
           delayMs: typeof ans.delayMs === 'number' ? ans.delayMs : undefined,
         }
       : undefined,
