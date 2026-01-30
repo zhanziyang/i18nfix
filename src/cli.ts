@@ -116,7 +116,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
   .option('--translate', 'run translation after fix (requires translate config)', false)
   .option('--translate-mode <all|missing|empty|untranslated>', 'what to translate after fix', 'all')
   .option('--translate-out-dir <dir>', 'write translated files to a directory (overrides fix out-dir for translation)')
-  .option('--translate-print-text', 'print base + translated text for each key (verbose)', false)
+  .option('-v, --verbose', 'verbose output (prints base + translated text for each key during translation)', false)
   .action(async (opts) => {
     const configPath = resolveConfigPath(opts.config);
     const cfg0 = await loadConfig(configPath);
@@ -144,7 +144,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
         outDir: opts.translateOutDir ?? opts.outDir,
         mode: opts.translateMode,
         showLangs: true,
-        printText: Boolean(opts.translatePrintText),
+        printText: Boolean(opts.verbose),
       });
     }
 
@@ -161,7 +161,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'translate')!)
   .option('--out-dir <dir>', 'write translated files to a directory')
   .option('--mode <missing|empty|untranslated|all>', 'what to translate', 'all')
   .option('--no-show-langs', 'disable printing from/to language per file')
-  .option('--print-text', 'print base + translated text for each key (verbose)', false)
+  .option('-v, --verbose', 'print base + translated text for each key', false)
   .action(async (opts) => {
     const configPath = resolveConfigPath(opts.config);
     const cfg0 = await loadConfig(configPath);
@@ -178,7 +178,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'translate')!)
       outDir: opts.outDir,
       mode: opts.mode,
       showLangs: Boolean(opts.showLangs),
-      printText: Boolean(opts.printText),
+      printText: Boolean(opts.verbose),
     });
   });
 
