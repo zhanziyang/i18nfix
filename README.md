@@ -84,7 +84,7 @@ node dist/cli.js fix --out-dir fixed
 Fix + translate in one go (recommended flow):
 
 ```bash
-# translates only problematic keys by default
+# prints from/to languages by default
 node dist/cli.js fix --in-place --translate
 ```
 

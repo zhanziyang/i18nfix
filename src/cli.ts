@@ -116,7 +116,6 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
   .option('--translate', 'run translation after fix (requires translate config)', false)
   .option('--translate-mode <all|missing|empty|untranslated>', 'what to translate after fix', 'all')
   .option('--translate-out-dir <dir>', 'write translated files to a directory (overrides fix out-dir for translation)')
-  .option('--translate-show-langs', 'print from/to language per file during translate', false)
   .option('--translate-print-text', 'print base + translated text for each key (verbose)', false)
   .action(async (opts) => {
     const configPath = resolveConfigPath(opts.config);
@@ -144,7 +143,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
         inPlace: Boolean(opts.inPlace),
         outDir: opts.translateOutDir ?? opts.outDir,
         mode: opts.translateMode,
-        showLangs: Boolean(opts.translateShowLangs),
+        showLangs: true,
         printText: Boolean(opts.translatePrintText),
       });
     }
@@ -161,7 +160,7 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'translate')!)
   .option('--in-place', 'overwrite target files', false)
   .option('--out-dir <dir>', 'write translated files to a directory')
   .option('--mode <missing|empty|untranslated|all>', 'what to translate', 'all')
-  .option('--show-langs', 'print from/to language per file', false)
+  .option('--no-show-langs', 'disable printing from/to language per file')
   .option('--print-text', 'print base + translated text for each key (verbose)', false)
   .action(async (opts) => {
     const configPath = resolveConfigPath(opts.config);
@@ -178,8 +177,8 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'translate')!)
       inPlace: Boolean(opts.inPlace),
       outDir: opts.outDir,
       mode: opts.mode,
-      showLangs: Boolean(opts.translateShowLangs),
-      printText: Boolean(opts.translatePrintText),
+      showLangs: Boolean(opts.showLangs),
+      printText: Boolean(opts.printText),
     });
   });
 
