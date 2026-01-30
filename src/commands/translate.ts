@@ -104,7 +104,13 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       else if ((opts.mode === 'issues' || opts.mode === 'all') && issueSet && issueSet.has(k)) toTranslate.push(k);
     }
 
+    const total = toTranslate.length;
     const items = toTranslate.slice(0, maxItems);
+    const remaining = Math.max(0, total - items.length);
+    if (total > maxItems) {
+      console.log(chalk.yellow(`Note: ${total} items match, but maxItems=${maxItems}. This run will translate ${items.length} and leave ${remaining} for the next run.`));
+    }
+
     if (items.length === 0) {
       console.log(chalk.gray(`No items to translate for ${targetFile} (mode=${opts.mode}).`));
       continue;
@@ -150,5 +156,8 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
 
     await fs.writeFile(outPath, outRaw, 'utf8');
     console.log(chalk.green(`Wrote: ${outPath}`));
+    if (remaining > 0) {
+      console.log(chalk.gray(`Next: re-run translate to process remaining items, or increase translate.maxItems in config.`));
+    }
   }
 }
