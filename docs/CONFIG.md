@@ -97,9 +97,9 @@ For OpenAI-compatible endpoints (mainly for self-hosted proxies). Usually not ne
 ### `translate.maxItems` (number, optional)
 Safety limit: maximum strings translated **per run**.
 
-Default: `200`
+Default: (no limit)
 
-If there are more items than `maxItems`, i18nfix will translate the first batch and print how many remain.
+If `maxItems` is set, i18nfix will translate at most that many strings per run and print how many remain.
 
 ### `translate.delayMs` (number, optional)
 Delay between requests (ms). Useful for rate limits.

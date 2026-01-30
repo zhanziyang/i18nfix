@@ -7,6 +7,12 @@ import {
   writeJsonFile,
 } from '../config.js';
 
+function int(v: string): number {
+  const n = Number(v);
+  if (!Number.isFinite(n) || n <= 0) throw new Error('maxItems must be a positive number');
+  return Math.floor(n);
+}
+
 export async function runConfigure(configPath?: string) {
   const p = resolveConfigPath(configPath);
 
@@ -109,10 +115,11 @@ export async function runConfigure(configPath?: string) {
       when: (a) => a.enableTranslate,
     },
     {
-      type: 'number',
+      type: 'input',
       name: 'maxItems',
-      message: 'Max strings per run (safety):',
-      default: current?.translate?.maxItems ?? 200,
+      message: 'Max strings per run (leave blank for no limit):',
+      default: current?.translate?.maxItems ?? '',
+      filter: (v: string) => v.trim(),
       when: (a) => a.enableTranslate,
     },
     {
@@ -136,7 +143,7 @@ export async function runConfigure(configPath?: string) {
           provider: ans.provider,
           apiKeyEnv: ans.apiKeyEnv || undefined,
           model: ans.model || undefined,
-                    maxItems: typeof ans.maxItems === 'number' ? ans.maxItems : undefined,
+                    maxItems: ans.maxItems ? int(ans.maxItems) : undefined,
           delayMs: typeof ans.delayMs === 'number' ? ans.delayMs : undefined,
         }
       : undefined,

@@ -58,7 +58,7 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
 
   const apiKey = getApiKey(tc);
   const delayMs = tc.delayMs ?? 0;
-  const maxItems = tc.maxItems ?? 200;
+  const maxItems = tc.maxItems;
   const batchSize = tc.batchSize ?? 25;
   const concurrency = tc.concurrency ?? 3;
 
@@ -121,10 +121,11 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
     }
 
     const total = toTranslate.length;
-    const items = toTranslate.slice(0, maxItems);
-    const remaining = Math.max(0, total - items.length);
-    if (total > maxItems) {
-      console.log(chalk.yellow(`Note: ${total} items match, but maxItems=${maxItems}. This run will translate ${items.length} and leave ${remaining} for the next run.`));
+    const effectiveMax = typeof maxItems === 'number' && maxItems > 0 ? maxItems : undefined;
+    const items = effectiveMax ? toTranslate.slice(0, effectiveMax) : toTranslate;
+    const remaining = effectiveMax ? Math.max(0, total - items.length) : 0;
+    if (effectiveMax && total > effectiveMax) {
+      console.log(chalk.yellow(`Note: ${total} items match, but maxItems=${effectiveMax}. This run will translate ${items.length} and leave ${remaining} for the next run.`));
     }
 
     if (items.length === 0) {
