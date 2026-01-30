@@ -190,11 +190,11 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       // first try batch
       let result: { map: Record<string, string>; duplicates: string[]; extras: string[] } = { map: {}, duplicates: [], extras: [] };
       try {
-        result = await translateBatch(
+        result = await withRetry(() => translateBatch(
           { provider: tc.provider, apiKey, model: tc.model, baseUrl: tc.baseUrl },
           payload,
           { sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang }
-        );
+        ), { retries: retryCount, baseDelayMs: retryBaseDelayMs });
         // strict-ish structure warnings
         if (result.extras.length) {
           console.warn(chalk.yellow(`\nBatch returned extra keys (ignored): ${result.extras.slice(0, 5).join(', ')}${result.extras.length > 5 ? '…' : ''}`));
