@@ -1,0 +1,127 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import chalk from 'chalk';
+import { I18nFixConfig, TranslateConfig } from '../types.js';
+import { detectKeyStyle, flattenJson, getPlaceholderExtractor, isPlainObject, readJson, unflattenJson } from '../i18n.js';
+import { translate as doTranslate } from '../providers/index.js';
+import { sleep } from '../providers/util.js';
+
+export interface TranslateRunOptions {
+  inPlace: boolean;
+  outDir?: string;
+  mode: 'missing' | 'empty' | 'untranslated';
+}
+
+function getApiKey(tc: TranslateConfig): string {
+  if (tc.apiKey) return tc.apiKey;
+  const env = tc.apiKeyEnv;
+  if (env && process.env[env]) return process.env[env]!;
+  // fallbacks by provider
+  const fallbackEnvByProvider: Record<string, string> = {
+    openai: 'OPENAI_API_KEY',
+    openrouter: 'OPENROUTER_API_KEY',
+    claude: 'ANTHROPIC_API_KEY',
+    gemini: 'GEMINI_API_KEY',
+  };
+  const f = fallbackEnvByProvider[tc.provider];
+  if (f && process.env[f]) return process.env[f]!;
+  throw new Error(
+    `Missing API key. Set translate.apiKeyEnv in config or export ${f ?? 'PROVIDER_API_KEY'} in your shell.`
+  );
+}
+
+export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions) {
+  const tc = cfg.translate;
+  if (!tc) throw new Error('Config missing translate section. Add translate: { provider, apiKeyEnv, model }');
+
+  const apiKey = getApiKey(tc);
+  const delayMs = tc.delayMs ?? 0;
+  const maxItems = tc.maxItems ?? 200;
+
+  let baseJson: any;
+  baseJson = await readJson(cfg.base);
+
+  const effectiveKeyStyle = cfg.keyStyle === 'auto' || !cfg.keyStyle ? detectKeyStyle(baseJson) : cfg.keyStyle;
+  const baseFlat =
+    effectiveKeyStyle === 'nested'
+      ? flattenJson(baseJson)
+      : (isPlainObject(baseJson) ? (baseJson as any) : {}) as Record<string, any>;
+
+  const placeholderStyle = Array.isArray(cfg.placeholderStyle) ? cfg.placeholderStyle[0] : (cfg.placeholderStyle ?? 'brace');
+  const extractor = getPlaceholderExtractor(placeholderStyle === 'auto' ? 'brace' : placeholderStyle);
+
+  const ignore = new Set(cfg.ignoreKeys ?? []);
+  const baseKeys = Object.keys(baseFlat).filter((k) => !ignore.has(k));
+
+  for (const targetFile of cfg.targets) {
+    let targetJson: any;
+    targetJson = await readJson(targetFile);
+
+    let targetFlat: Record<string, any> =
+      effectiveKeyStyle === 'nested'
+        ? flattenJson(targetJson)
+        : (isPlainObject(targetJson) ? (targetJson as any) : {}) as Record<string, any>;
+
+    const targetKeys = new Set(Object.keys(targetFlat).filter((k) => !ignore.has(k)));
+
+    const toTranslate: string[] = [];
+    for (const k of baseKeys) {
+      const baseVal = baseFlat[k];
+      const has = targetKeys.has(k);
+      const targetVal = targetFlat[k];
+
+      if (typeof baseVal !== 'string' || !baseVal.trim()) continue;
+
+      if (opts.mode === 'missing' && !has) toTranslate.push(k);
+      if (opts.mode === 'empty' && has && typeof targetVal === 'string' && targetVal.trim().length === 0) toTranslate.push(k);
+      if (opts.mode === 'untranslated' && has && cfg.treatSameAsBaseAsUntranslated && targetVal === baseVal) toTranslate.push(k);
+    }
+
+    const items = toTranslate.slice(0, maxItems);
+    if (items.length === 0) {
+      console.log(chalk.gray(`No items to translate for ${targetFile} (mode=${opts.mode}).`));
+      continue;
+    }
+
+    console.log(chalk.bold(`Translating ${items.length} items for ${targetFile} (mode=${opts.mode})...`));
+
+    for (let i = 0; i < items.length; i++) {
+      const k = items[i]!;
+      const baseText = String(baseFlat[k]);
+      const hints = extractor(baseText);
+      const res = await doTranslate(
+        {
+          provider: tc.provider,
+          apiKey,
+          model: tc.model,
+          baseUrl: tc.baseUrl,
+        },
+        {
+          text: baseText,
+          sourceLang: tc.sourceLang,
+          targetLang: tc.targetLang,
+          placeholderHints: hints,
+        }
+      );
+
+      targetFlat[k] = res.text;
+      process.stdout.write(chalk.green(`\r  ${i + 1}/${items.length}`));
+      if (delayMs) await sleep(delayMs);
+    }
+    process.stdout.write('\n');
+
+    // write
+    const outObj = effectiveKeyStyle === 'nested' ? unflattenJson(targetFlat) : targetFlat;
+    const outRaw = JSON.stringify(outObj, null, 2) + '\n';
+
+    let outPath = targetFile;
+    if (!opts.inPlace) {
+      const dir = opts.outDir ? path.resolve(opts.outDir) : path.resolve(process.cwd(), 'translated');
+      await fs.mkdir(dir, { recursive: true });
+      outPath = path.join(dir, path.basename(targetFile));
+    }
+
+    await fs.writeFile(outPath, outRaw, 'utf8');
+    console.log(chalk.green(`Wrote: ${outPath}`));
+  }
+}

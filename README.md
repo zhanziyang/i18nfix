@@ -108,11 +108,49 @@ Example:
 - `--placeholder-style <auto|brace|mustache|printf>` (comma-separated list supported)
 - `--ignore-keys <comma-separated>`
 
+## Translate (LLM providers)
+
+> Keys should be provided via environment variables (recommended). Do **not** commit keys to git.
+
+Add a `translate` section to your `i18nfix.config.json`:
+
+```json
+{
+  "translate": {
+    "provider": "openai",
+    "apiKeyEnv": "OPENAI_API_KEY",
+    "model": "gpt-4o-mini",
+    "sourceLang": "en",
+    "targetLang": "zh",
+    "delayMs": 0,
+    "maxItems": 200
+  }
+}
+```
+
+Supported providers:
+- `openai` (env: `OPENAI_API_KEY`)
+- `openrouter` (env: `OPENROUTER_API_KEY`, model example: `anthropic/claude-3.5-sonnet`)
+- `claude` (Anthropic API, env: `ANTHROPIC_API_KEY`)
+- `gemini` (Google, env: `GEMINI_API_KEY`)
+
+Run:
+
+```bash
+# translate missing keys (default)
+node dist/cli.js translate --mode missing --out-dir translated
+
+# translate empty values
+node dist/cli.js translate --mode empty --in-place
+
+# translate values equal to base (needs treatSameAsBaseAsUntranslated=true)
+node dist/cli.js translate --mode untranslated --out-dir translated
+```
+
 ## Roadmap
 
 - Better placeholder detection (ICU message format, etc.)
 - Array handling
-- `translate` command (plug in model providers)
 - GitHub PR mode
 
 ## License

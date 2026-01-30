@@ -5,6 +5,7 @@ import { loadConfig, mergeConfig, normalizeKeyStyle, normalizePlaceholderStyle, 
 import { runInit } from './commands/init.js';
 import { runCheck } from './commands/check.js';
 import { runFix } from './commands/fix.js';
+import { runTranslate } from './commands/translate.js';
 
 const program = new Command();
 program
@@ -121,6 +122,33 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
     console.log(chalk.green('Done.'));
     console.log(`Issues found: ${report.issues.length}`);
     process.exit(report.summary.parseErrors > 0 ? 2 : 0);
+  });
+
+program
+  .command('translate')
+  .description('Translate missing/empty/untranslated strings using an LLM provider (openai/claude/gemini/openrouter)')
+  .allowExcessArguments(false);
+
+applyCommonOptions(program.commands.find((c) => c.name() === 'translate')!)
+  .option('--in-place', 'overwrite target files', false)
+  .option('--out-dir <dir>', 'write translated files to a directory')
+  .option('--mode <missing|empty|untranslated>', 'what to translate', 'missing')
+  .action(async (opts) => {
+    const configPath = resolveConfigPath(opts.config);
+    const cfg0 = await loadConfig(configPath);
+    const cfg = mergeConfig(cfg0, {
+      base: opts.base,
+      targets: opts.targets ? opts.targets.split(',').map((s: string) => s.trim()).filter(Boolean) : undefined,
+      keyStyle: opts.keyStyle ? normalizeKeyStyle(opts.keyStyle) : undefined,
+      placeholderStyle: opts.placeholderStyle ? normalizePlaceholderStyle(opts.placeholderStyle) : undefined,
+      ignoreKeys: opts.ignoreKeys ? opts.ignoreKeys.split(',').map((s: string) => s.trim()).filter(Boolean) : undefined,
+    });
+
+    await runTranslate(cfg, {
+      inPlace: Boolean(opts.inPlace),
+      outDir: opts.outDir,
+      mode: opts.mode,
+    });
   });
 
 program.parseAsync(process.argv);
