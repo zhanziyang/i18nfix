@@ -20,6 +20,10 @@ export interface TranslateConfig {
   batchSize?: number;
   /** Concurrency of LLM requests (performance). */
   concurrency?: number;
+  /** Retry count for single-item fallback (stability). */
+  retryCount?: number;
+  /** Base retry delay (ms) for backoff (stability). */
+  retryBaseDelayMs?: number;
   /** Delay between requests (ms). */
   delayMs?: number;
 }

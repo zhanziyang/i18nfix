@@ -120,6 +120,16 @@ Default: `3`
 
 In batch mode, i18nfix will validate placeholder consistency. If a translated string is missing or has mismatched placeholders, it will automatically retry that item in single-item mode.
 
+### `translate.retryCount` (number, optional)
+How many times to retry single-item fallback calls on transient errors (429/5xx/timeouts).
+
+Default: `3`
+
+### `translate.retryBaseDelayMs` (number, optional)
+Base delay for exponential backoff retries.
+
+Default: `400`
+
 ---
 
 ## Full example

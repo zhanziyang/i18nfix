@@ -7,6 +7,7 @@ import { translate as doTranslate, translateBatch } from '../providers/index.js'
 import { runCheck } from './check.js';
 import { sleep } from '../providers/util.js';
 import { mapLimit } from '../providers/pool.js';
+import { withRetry } from '../providers/retry.js';
 
 
 function inferSourceLang(filePath: string): string | undefined {
@@ -61,6 +62,8 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
   const maxItems = tc.maxItems;
   const batchSize = tc.batchSize ?? 25;
   const concurrency = tc.concurrency ?? 3;
+  const retryCount = tc.retryCount ?? 3;
+  const retryBaseDelayMs = tc.retryBaseDelayMs ?? 400;
 
   let baseJson: any;
   baseJson = (await readLocaleFile(cfg.base)).data;
@@ -170,10 +173,10 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
         if (!translated || !translated.trim()) {
           // fallback single-item
           try {
-            const r = await doTranslate(
+            const r = await withRetry(() => doTranslate(
               { provider: tc.provider, apiKey, model: tc.model, baseUrl: tc.baseUrl },
               { text: baseText, sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang, placeholderHints: extractor(baseText) }
-            );
+            ), { retries: retryCount, baseDelayMs: retryBaseDelayMs });
             translated = r.text;
           } catch {
             translated = '';
@@ -184,10 +187,10 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
             const { placeholderOk } = await import('../providers/validate.js');
             const ok = placeholderOk(placeholderStyle === 'auto' ? 'brace' : (placeholderStyle as any), baseText, translated);
             if (!ok) {
-              const r = await doTranslate(
+              const r = await withRetry(() => doTranslate(
                 { provider: tc.provider, apiKey, model: tc.model, baseUrl: tc.baseUrl },
                 { text: baseText, sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang, placeholderHints: extractor(baseText) }
-              );
+              ), { retries: retryCount, baseDelayMs: retryBaseDelayMs });
               translated = r.text;
             }
           } catch {
