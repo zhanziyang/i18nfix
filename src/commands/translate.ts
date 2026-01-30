@@ -19,7 +19,7 @@ function inferTargetLang(filePath: string): string | undefined {
 export interface TranslateRunOptions {
   inPlace: boolean;
   outDir?: string;
-  mode: 'missing' | 'empty' | 'untranslated' | 'issues' | 'all';
+  mode: 'missing' | 'empty' | 'untranslated' | 'all';
 }
 
 function getApiKey(tc: TranslateConfig): string {
@@ -64,7 +64,7 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
   const baseKeys = Object.keys(baseFlat).filter((k) => !ignore.has(k));
 
   const modeKeysByFile: Map<string, Set<string>> = new Map();
-  if (opts.mode === 'issues' || opts.mode === 'all') {
+  if (opts.mode === 'all') {
     const report = await runCheck(cfg);
     for (const issue of report.issues) {
       if (!issue.key) continue;
@@ -101,7 +101,7 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       if (opts.mode === 'missing' && !has) toTranslate.push(k);
       else if (opts.mode === 'empty' && has && typeof targetVal === 'string' && targetVal.trim().length === 0) toTranslate.push(k);
       else if (opts.mode === 'untranslated' && has && cfg.treatSameAsBaseAsUntranslated && targetVal === baseVal) toTranslate.push(k);
-      else if ((opts.mode === 'issues' || opts.mode === 'all') && issueSet && issueSet.has(k)) toTranslate.push(k);
+      else if (opts.mode === 'all' && issueSet && issueSet.has(k)) toTranslate.push(k);
     }
 
     const total = toTranslate.length;

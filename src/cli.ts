@@ -142,7 +142,7 @@ program
 applyCommonOptions(program.commands.find((c) => c.name() === 'translate')!)
   .option('--in-place', 'overwrite target files', false)
   .option('--out-dir <dir>', 'write translated files to a directory')
-  .option('--mode <missing|empty|untranslated|issues|all>', 'what to translate', 'missing')
+  .option('--mode <missing|empty|untranslated|all>', 'what to translate', 'missing')
   .action(async (opts) => {
     const configPath = resolveConfigPath(opts.config);
     const cfg0 = await loadConfig(configPath);

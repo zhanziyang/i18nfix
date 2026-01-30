@@ -151,9 +151,7 @@ node dist/cli.js translate --mode empty --in-place
 node dist/cli.js translate --mode untranslated --out-dir translated
 
 # translate ONLY keys that have issues (missing/empty/untranslated/placeholder mismatch)
-node dist/cli.js translate --mode issues --out-dir translated
-
-# alias of issues (future: may include more issue types)
+# translate ONLY keys that have issues (missing/empty/untranslated/placeholder mismatch)
 node dist/cli.js translate --mode all --out-dir translated
 ```
 
