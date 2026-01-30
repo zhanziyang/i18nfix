@@ -5,3 +5,5 @@ dist/
 # config is project-specific
 i18nfix.config.json
 fixed/
+.env
+*.lock
