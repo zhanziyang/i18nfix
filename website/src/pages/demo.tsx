@@ -12,7 +12,7 @@ export default function DemoPage() {
           <div className={styles.titleRow}>
             <div>
               <h1 className={styles.h1}>Demo</h1>
-              <div className={styles.sub}>Fix (unified) and Translate (unified) rendered with @pierre/diffs.</div>
+              <div className={styles.sub}>Curated fixtures that demonstrate missing keys, placeholder/printf mismatches, untranslated strings, and safe translation output.</div>
             </div>
           </div>
 
