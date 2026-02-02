@@ -81,11 +81,15 @@
 .blockTitle {
   font-weight: 950;
   letter-spacing: -0.02em;
+  font-size: 1.35rem;
 }
 
 .metaLine {
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.70);
+  font-size: 1.05rem;
+  line-height: 1.35;
+  max-width: 820px;
+  text-wrap: balance;
 }
 
 .cmd {
