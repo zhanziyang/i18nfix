@@ -20,10 +20,10 @@ const EN_FILE: FileContents = {
   },
   "home": {
     "subtitle": "Fix missing keys, placeholders, and untranslated strings",
-    "markdown": "Read the **docs** at [Getting Started](/docs/getting-started)."
+    "tip": "See: Getting Started"
   },
   "errors": {
-    "required": "<b>{field}</b> is required."
+    "required": "{field} is required."
   },
   "footer": {
     "legal": "© {year} i18nfix"
@@ -51,7 +51,7 @@ const ZH_BEFORE_FIX: FileContents = {
   },
   "home": {
     "subtitle": "Fix missing keys, placeholders, and untranslated strings",
-    "markdown": "Read the **docs** at [Getting Started](/docs/getting-started)."
+    "tip": "See: Getting Started"
   },
   "footer": {
     "legal": ""
@@ -76,7 +76,7 @@ const ZH_AFTER_FIX: FileContents = {
   },
   "home": {
     "subtitle": "Fix missing keys, placeholders, and untranslated strings",
-    "markdown": "Read the **docs** at [Getting Started](/docs/getting-started)."
+    "tip": "See: Getting Started"
   },
   "errors": {
     "required": ""
@@ -114,10 +114,10 @@ const ZH_AFTER_TRANSLATE: FileContents = {
   },
   "home": {
     "subtitle": "修复缺失 key、占位符与未翻译的字符串",
-    "markdown": "阅读 **文档**： [Getting Started](/docs/getting-started)。"
+    "tip": "参见：Getting Started"
   },
   "errors": {
-    "required": "<b>{field}</b> 为必填项。"
+    "required": "{field} 为必填项。"
   },
   "footer": {
     "legal": "© {year} i18nfix"
