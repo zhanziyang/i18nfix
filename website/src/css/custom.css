@@ -1,0 +1,247 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  /* diffs.com-ish: restrained, high-contrast, dark-only */
+  --ifm-color-primary: #a8ff60;
+  --ifm-color-primary-dark: #8dfb3a;
+  --ifm-color-primary-darker: #7df62a;
+  --ifm-color-primary-darkest: #58d300;
+  --ifm-color-primary-light: #b9ff7e;
+  --ifm-color-primary-lighter: #c3ff8e;
+  --ifm-color-primary-lightest: #dcffc0;
+
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark'] {
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.08);
+}
+
+/* Hard-lock dark look */
+html, body {
+  background: #07080b;
+}
+
+/* diffs.com-ish navbar */
+.navbar {
+  background: rgba(7, 8, 11, 0.72);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: none;
+}
+
+.navbar__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.navbar__brand {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.navbar__item {
+  opacity: 0.86;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.navbar__items--left .navbar__item {
+  margin-right: 4px;
+}
+
+.navbar__link {
+  position: relative;
+}
+
+.navbar__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 1px;
+  background: rgba(168, 255, 96, 0.55);
+  opacity: 0;
+  transform: scaleX(0.2);
+  transform-origin: left;
+  transition: opacity 160ms ease, transform 220ms ease;
+}
+
+.navbar__item:hover {
+  opacity: 1;
+}
+
+.navbar__link:hover::after,
+.navbar__link--active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.navbar__link--active {
+  opacity: 1;
+}
+
+/* Minimal footer */
+.i18nfixFooter {
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(7, 8, 11, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.i18nfixFooter__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+@media (max-width: 996px) {
+  .i18nfixFooter__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.i18nfixFooter__left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+}
+
+.i18nfixFooter__brand {
+  font-weight: 850;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.i18nfixFooter__sep {
+  opacity: 0.35;
+}
+
+.i18nfixFooter__nav {
+  display: inline-flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.i18nfixFooter__link {
+  color: rgba(255, 255, 255, 0.70);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.i18nfixFooter__link:hover {
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: underline;
+  text-decoration-color: rgba(168, 255, 96, 0.55);
+  text-underline-offset: 3px;
+}
+
+/* Demo layout + hacker-ish progress */
+.i18nfixDemoGrid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 10px;
+  padding: 8px;
+}
+
+@media (max-width: 996px) {
+  .i18nfixDemoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.i18nfixDemoPanel {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.i18nfixDemoPanel__title {
+  padding: 10px 12px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.66);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.i18nfixProgress {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 14px 14px 16px;
+  background: radial-gradient(800px 280px at 20% 0%, rgba(168, 255, 96, 0.20), transparent 60%),
+    rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
+.i18nfixProgress__top {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-family: var(--ifm-font-family-monospace);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+}
+
+.i18nfixProgress__prompt {
+  color: var(--ifm-color-primary);
+  font-weight: 800;
+}
+
+.i18nfixProgress__cmd {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.i18nfixProgress__bar {
+  margin-top: 12px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  position: relative;
+}
+
+.i18nfixProgress__bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-60%);
+  background: linear-gradient(90deg, transparent, rgba(168, 255, 96, 0.55), transparent);
+  animation: i18nfixBar 900ms linear infinite;
+}
+
+.i18nfixProgress__scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent, rgba(168, 255, 96, 0.10), transparent);
+  transform: translateY(-60%);
+  animation: i18nfixScan 1300ms ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+@keyframes i18nfixBar {
+  0% { transform: translateX(-80%); }
+  100% { transform: translateX(80%); }
+}
+
+@keyframes i18nfixScan {
+  0% { transform: translateY(-70%); opacity: 0.2; }
+  50% { transform: translateY(20%); opacity: 0.45; }
+  100% { transform: translateY(80%); opacity: 0.2; }
+}
