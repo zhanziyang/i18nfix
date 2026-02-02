@@ -347,7 +347,9 @@
 }
 
 .featuresSection {
-  padding: 1.5rem 0 3.5rem;
+  padding: 2.4rem 0 4.2rem;
+  background: radial-gradient(900px 420px at 15% 0%, rgba(168, 255, 96, 0.10), transparent 65%),
+    radial-gradient(900px 420px at 80% 0%, rgba(90, 255, 224, 0.07), transparent 70%);
 }
 
 .workflowSection {
@@ -439,20 +441,73 @@
 }
 
 .featureCard {
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 14px;
-  padding: 1.1rem 1.1rem;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.05rem 1.05rem;
   background: rgba(255, 255, 255, 0.02);
+  transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+  will-change: transform;
+  overflow: hidden;
+  animation: riseIn 700ms ease both;
+}
+
+.featureCard:nth-child(2) { animation-delay: 80ms; }
+.featureCard:nth-child(3) { animation-delay: 160ms; }
+.featureCard:nth-child(4) { animation-delay: 240ms; }
+
+.featureCard::before {
+  content: '';
+  position: absolute;
+  inset: -40% -30% auto -30%;
+  height: 220px;
+  background: radial-gradient(420px 160px at 20% 35%, rgba(168, 255, 96, 0.16), transparent 62%),
+    radial-gradient(420px 160px at 70% 35%, rgba(90, 255, 224, 0.10), transparent 66%);
+  opacity: 0.0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+
+.featureCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(168, 255, 96, 0.28);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.featureCard:hover::before {
+  opacity: 1;
+}
+
+.featureIcon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.30);
+  color: rgba(168, 255, 96, 0.88);
+}
+
+.featureIcon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .featureTitle {
-  font-weight: 800;
+  margin-top: 0.75rem;
+  font-weight: 850;
   letter-spacing: -0.02em;
 }
 
 .featureBody {
   margin-top: 0.4rem;
-  color: var(--ifm-color-emphasis-700);
+  color: rgba(255, 255, 255, 0.70);
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .commandStrip {

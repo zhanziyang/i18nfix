@@ -151,19 +151,95 @@ function Features() {
   const items = [
     {
       title: 'Safe by default',
-      body: "Validates placeholders and basic formatting so translations don’t silently break runtime.",
+      body: "Validates placeholders so translations don’t break runtime.",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            d="M12 2l8 4v6c0 5-3.3 9.4-8 10-4.7-.6-8-5-8-10V6l8-4z"
+            stroke="currentColor"
+            strokeWidth="1.8"
+          />
+          <path
+            d="M8.5 12.2l2.1 2.2 4.9-5"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
     },
     {
       title: 'Fix structure',
-      body: 'Detect missing/extra keys and write fixed output (or in-place).',
+      body: 'Adds missing keys and keeps your locale shape consistent.',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            d="M7 3h10v4H7V3z"
+            stroke="currentColor"
+            strokeWidth="1.8"
+          />
+          <path
+            d="M5 10h14M5 14h14M5 18h10"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
+        </svg>
+      ),
     },
     {
       title: 'Translate only what’s broken',
-      body: 'LLM translation focuses on problematic keys, not everything.',
+      body: 'Focus on missing/empty/untranslated keys — not everything.',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            d="M4 6h7l-3 12"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
+          <path
+            d="M13 18h7"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
+          <path
+            d="M14.5 6h5.5l-2.8 7.2c-.4 1-1.3 1.8-2.4 2.1"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
+        </svg>
+      ),
     },
     {
       title: 'CI-friendly',
-      body: 'Run check in PRs and fail fast with a JSON report for tooling.',
+      body: 'Deterministic exit codes + JSON report for PR checks.',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            d="M7 7a3 3 0 106 0 3 3 0 00-6 0z"
+            stroke="currentColor"
+            strokeWidth="1.8"
+          />
+          <path
+            d="M11 10v4a3 3 0 103 3h3"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M20 10V6h-4"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
     },
   ];
 
@@ -173,6 +249,7 @@ function Features() {
         <div className={styles.featuresGrid}>
           {items.map((it) => (
             <div key={it.title} className={styles.featureCard}>
+              <div className={styles.featureIcon}>{it.icon}</div>
               <div className={styles.featureTitle}>{it.title}</div>
               <div className={styles.featureBody}>{it.body}</div>
             </div>

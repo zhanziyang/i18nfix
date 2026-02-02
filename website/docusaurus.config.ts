@@ -7,7 +7,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'i18nfix',
   tagline: 'Check, fix, translate i18n locale files — safely.',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.png',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -59,7 +59,7 @@ const config: Config = {
 
   themeConfig: {
     // Social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/og.png',
     colorMode: {
       defaultMode: 'dark',
       disableSwitch: true,
@@ -72,14 +72,27 @@ const config: Config = {
         src: 'img/logo.svg',
       },
       items: [
-        {to: '/', label: 'Home', position: 'left'},
+        {
+          to: '/',
+          label: 'Home',
+          position: 'left',
+          // Only active on exact homepage (GH Pages baseUrl included)
+          activeBaseRegex: '^/i18nfix/?$',
+        },
         {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
-          position: 'left',
           label: 'Docs',
+          position: 'left',
+          // Ensure only Docs is active for /docs/*
+          activeBaseRegex: '^/i18nfix/docs/.*',
         },
-        {to: '/demo', label: 'Demo', position: 'left'},
+        {
+          to: '/demo',
+          label: 'Demo',
+          position: 'left',
+          activeBaseRegex: '^/i18nfix/demo/?$',
+        },
         {
           type: 'docsVersionDropdown',
           position: 'right',
