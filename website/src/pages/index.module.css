@@ -353,37 +353,53 @@
 }
 
 .workflowSection {
-  margin-top: 1.25rem;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 16px;
+  margin-top: 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.02);
   overflow: hidden;
+  position: relative;
+}
+
+.workflowSection::before {
+  content: '';
+  position: absolute;
+  inset: -40% -30% auto -30%;
+  height: 340px;
+  background:
+    radial-gradient(520px 220px at 18% 30%, rgba(168, 255, 96, 0.14), transparent 62%),
+    radial-gradient(520px 220px at 70% 30%, rgba(90, 255, 224, 0.10), transparent 66%);
+  opacity: 0.85;
+  pointer-events: none;
+  filter: blur(1px);
 }
 
 .workflowHeader {
-  padding: 1rem 1.1rem;
-  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  padding: 1.05rem 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  position: relative;
 }
 
 .workflowTitle {
-  font-weight: 900;
+  font-weight: 950;
   letter-spacing: -0.02em;
 }
 
 .workflowSub {
-  font-size: 0.9rem;
-  color: var(--ifm-color-emphasis-600);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.62);
 }
 
 .workflowGrid {
-  padding: 1rem 1.1rem 1.1rem;
+  padding: 1rem 1.1rem 1.15rem;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+  position: relative;
 }
 
 @media screen and (max-width: 996px) {
@@ -397,35 +413,67 @@
 }
 
 .workflowStep {
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 14px;
-  padding: 0.95rem 0.95rem;
-  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.05rem 1.05rem;
+  background: rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+  transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.workflowStep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  transform: translateY(-65%);
+  opacity: 0.0;
+  pointer-events: none;
+}
+
+.workflowStep:hover {
+  transform: translateY(-3px);
+  border-color: rgba(168, 255, 96, 0.24);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.workflowStep:hover::after {
+  opacity: 0.55;
+  animation: scanDown 1.6s ease-in-out infinite;
 }
 
 .stepKicker {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  color: var(--ifm-color-emphasis-700);
-  font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 850;
   font-size: 0.85rem;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 1px rgba(168, 255, 96, 0.08) inset;
 }
 
 .stepTitle {
-  margin-top: 0.5rem;
-  font-weight: 900;
+  margin-top: 0.55rem;
+  font-weight: 950;
   letter-spacing: -0.02em;
 }
 
 .stepHint {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: var(--ifm-color-emphasis-700);
+  margin-top: 0.55rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+@keyframes scanDown {
+  0% { transform: translateY(-65%); }
+  50% { transform: translateY(10%); }
+  100% { transform: translateY(80%); }
 }
 
 .featuresGrid {
@@ -511,7 +559,7 @@
 }
 
 .commandStrip {
-  margin-top: 1.25rem;
+  margin-top: 1.1rem;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.75rem;
@@ -524,19 +572,43 @@
 }
 
 .commandItem {
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 14px;
-  padding: 0.9rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 0.95rem 1rem;
   background: rgba(255, 255, 255, 0.02);
+  position: relative;
+  overflow: hidden;
+  transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.commandItem::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(420px 140px at 10% 20%, rgba(168, 255, 96, 0.10), transparent 60%);
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+
+.commandItem:hover {
+  transform: translateY(-3px);
+  border-color: rgba(168, 255, 96, 0.22);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.commandItem:hover::before {
+  opacity: 1;
 }
 
 .commandName {
   font-family: var(--ifm-font-family-monospace);
-  font-weight: 800;
+  font-weight: 900;
+  letter-spacing: -0.01em;
 }
 
 .commandDesc {
-  margin-top: 0.25rem;
-  font-size: 0.9rem;
-  color: var(--ifm-color-emphasis-700);
+  margin-top: 0.35rem;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.62);
 }
