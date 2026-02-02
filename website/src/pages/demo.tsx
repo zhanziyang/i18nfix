@@ -12,7 +12,7 @@ export default function DemoPage() {
           <div className={styles.titleRow}>
             <div>
               <h1 className={styles.h1}>Demo</h1>
-              <div className={styles.sub}>Fix (unified) and Translate (split) rendered with @pierre/diffs.</div>
+              <div className={styles.sub}>Fix (unified) and Translate (unified) rendered with @pierre/diffs.</div>
             </div>
           </div>
 
@@ -41,9 +41,9 @@ export default function DemoPage() {
                 <div className={styles.toolbarLeft}>
                   <div className={styles.blockTitle}>Translate</div>
                   <div className={styles.metaLine}>
-                    <span className={styles.pill}>split</span>
-                    <span className={styles.pill}>before → after</span>
-                    <span className={styles.pill}>provider: (local)</span>
+                    <span className={styles.pill}>unified</span>
+                    <span className={styles.pill}>base: en.json</span>
+                    <span className={styles.pill}>target: zh.json</span>
                   </div>
                 </div>
                 <div className={styles.toolbarRight}>

@@ -161,16 +161,34 @@ export function I18nfixTranslateDemo({animate = true}: {animate?: boolean}) {
 
   return (
     <div style={{borderRadius: 16, overflow: 'hidden'}}>
-      <div style={{padding: 12}}>
-        {loading ? (
-          <TerminalProgress label="i18nfix fix --in-place --translate" />
-        ) : (
-          <MultiFileDiff
-            oldFile={ZH_BEFORE_TRANSLATE}
-            newFile={ZH_AFTER_TRANSLATE}
-            options={{...diffOptionsBase, diffStyle: 'split'}}
+      <div className="i18nfixDemoGrid">
+        <div className="i18nfixDemoPanel">
+          <div className="i18nfixDemoPanel__title">Base (en)</div>
+          <File
+            file={EN_FILE}
+            options={{
+              theme: 'pierre-dark',
+              themeType: 'dark',
+              overflow: 'wrap',
+              disableLineNumbers: false,
+            }}
           />
-        )}
+        </div>
+
+        <div className="i18nfixDemoPanel">
+          <div className="i18nfixDemoPanel__title">Target (zh) — translate output</div>
+          <div style={{padding: 10}}>
+            {loading ? (
+              <TerminalProgress label="i18nfix fix --in-place --translate" />
+            ) : (
+              <MultiFileDiff
+                oldFile={ZH_BEFORE_TRANSLATE}
+                newFile={ZH_AFTER_TRANSLATE}
+                options={{...diffOptionsBase, diffStyle: 'unified'}}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
