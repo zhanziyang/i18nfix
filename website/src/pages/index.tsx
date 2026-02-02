@@ -65,7 +65,7 @@ function Hero() {
             i18nfix
           </Heading>
           <p className={styles.subtitle}>
-            Keep locale files in sync. Fix keys. Preserve placeholders. Translate only what’s broken.
+            Keep locales in sync across languages—automatically.
           </p>
 
           <div className={styles.ctaRow}>
@@ -108,11 +108,7 @@ function Demo() {
             <div className={styles.demoToolbar}>
               <div className={styles.demoToolbarLeft}>
                 <div className={styles.demoBlockTitle}>Fix</div>
-                <div className={styles.demoMetaLine}>
-                  <span className={styles.demoPill}>unified</span>
-                  <span className={styles.demoPill}>base: en.json</span>
-                  <span className={styles.demoPill}>target: zh.json</span>
-                </div>
+                <div className={styles.demoMetaLine}>Adds missing keys • Keeps structure consistent • No content changes</div>
               </div>
               <div className={styles.demoToolbarRight}>
                 <code className={styles.demoCmd}>i18nfix fix --out-dir fixed</code>
@@ -127,11 +123,7 @@ function Demo() {
             <div className={styles.demoToolbar}>
               <div className={styles.demoToolbarLeft}>
                 <div className={styles.demoBlockTitle}>Translate</div>
-                <div className={styles.demoMetaLine}>
-                  <span className={styles.demoPill}>split</span>
-                  <span className={styles.demoPill}>before → after</span>
-                  <span className={styles.demoPill}>provider: (local)</span>
-                </div>
+                <div className={styles.demoMetaLine}>Fills missing/untranslated strings • Preserves variables • Great for CI</div>
               </div>
               <div className={styles.demoToolbarRight}>
                 <code className={styles.demoCmd}>i18nfix fix --in-place --translate</code>

@@ -84,22 +84,8 @@
 }
 
 .metaLine {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  height: 22px;
-  padding: 0 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 12px;
-  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.95rem;
 }
 
 .cmd {

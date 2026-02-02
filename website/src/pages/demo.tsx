@@ -12,7 +12,7 @@ export default function DemoPage() {
           <div className={styles.titleRow}>
             <div>
               <h1 className={styles.h1}>Demo</h1>
-              <div className={styles.sub}>Curated fixtures that demonstrate missing keys, placeholder/printf mismatches, untranslated strings, and safe translation output.</div>
+              <div className={styles.sub}>Curated fixtures that demonstrate missing keys, untranslated strings, placeholder/printf mismatches, and safer translation output.</div>
             </div>
           </div>
 
@@ -21,11 +21,7 @@ export default function DemoPage() {
               <div className={styles.toolbar}>
                 <div className={styles.toolbarLeft}>
                   <div className={styles.blockTitle}>Fix</div>
-                  <div className={styles.metaLine}>
-                    <span className={styles.pill}>unified</span>
-                    <span className={styles.pill}>base: en.json</span>
-                    <span className={styles.pill}>target: zh.json</span>
-                  </div>
+                  <div className={styles.metaLine}>Adds missing keys • Keeps structure consistent • No content changes</div>
                 </div>
                 <div className={styles.toolbarRight}>
                   <code className={styles.cmd}>i18nfix fix --out-dir fixed</code>
@@ -40,11 +36,7 @@ export default function DemoPage() {
               <div className={styles.toolbar}>
                 <div className={styles.toolbarLeft}>
                   <div className={styles.blockTitle}>Translate</div>
-                  <div className={styles.metaLine}>
-                    <span className={styles.pill}>unified</span>
-                    <span className={styles.pill}>base: en.json</span>
-                    <span className={styles.pill}>target: zh.json</span>
-                  </div>
+                  <div className={styles.metaLine}>Fills missing/untranslated strings • Preserves variables • Great for CI</div>
                 </div>
                 <div className={styles.toolbarRight}>
                   <code className={styles.cmd}>i18nfix fix --in-place --translate</code>
