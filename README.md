@@ -246,8 +246,13 @@ Language handling:
 - `targetLang` is inferred from the target filename when not provided (e.g. `zh.json`, `ja.json`, `fr-FR.json` → `zh`, `ja`, `fr`).
 - from/to languages are printed by default during translation. Use `translate --no-show-langs` to hide.
 
-## Full documentation
+## Documentation
 
+- Website: https://zhanziyang.github.io/i18nfix/
+- Demo: https://zhanziyang.github.io/i18nfix/demo
+- Recommended workflow: https://zhanziyang.github.io/i18nfix/docs/guides/workflow
+
+Reference docs in-repo:
 - CLI reference: `docs/CLI.md`
 - Config reference: `docs/CONFIG.md`
 
