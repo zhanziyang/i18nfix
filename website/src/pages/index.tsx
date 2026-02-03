@@ -299,7 +299,13 @@ function InstallFinal() {
   return (
     <section className={styles.installFinalSection}>
       <div className={clsx('container', styles.installFinalContainer)}>
-        <InstallTabs />
+        <div className={styles.installFinalCard}>
+          <div className={styles.installFinalTitle}>Install</div>
+          <div className={styles.installFinalSub}>
+            Add as a dev dependency, then run it via <code>npx i18nfix</code> or npm scripts.
+          </div>
+          <InstallTabs />
+        </div>
       </div>
     </section>
   );
