@@ -69,7 +69,9 @@ function Hero() {
             i18nfix
           </Heading>
           <p className={clsx(styles.subtitle, styles.reveal, styles.reveal3)}>
-            Maintain one source language. Let CI keep every other locale in sync—automatically.
+            Write one language. Ship all languages.
+            <br />
+            Let CI keep every other locale in sync—automatically.
           </p>
 
           <div className={clsx(styles.ctaRow, styles.reveal, styles.reveal4)}>
