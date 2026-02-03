@@ -51,7 +51,7 @@ const config: Config = {
       disableSwitch: true,
       respectPrefersColorScheme: false,
     },
-    image: 'img/og-v5.png',
+    image: 'img/og-v6.png',
     navbar: {
       title: 'i18nfix',
       logo: {
