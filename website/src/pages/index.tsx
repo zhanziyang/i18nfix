@@ -304,7 +304,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title="i18nfix"
-      description="A CLI to check, fix, and translate i18n locale files safely.">
+      description="Write one language. Ship all languages. i18nfix keeps locale files in sync (CI-friendly) with safe placeholder validation.">
       <Hero />
       <main>
         <Demo />

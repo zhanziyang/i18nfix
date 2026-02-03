@@ -1,5 +1,7 @@
 # i18nfix
 
+**Write one language. Ship all languages.**
+
 A CLI to **check**, **fix**, and **translate** i18n locale files.
 
 Supported formats (common):
