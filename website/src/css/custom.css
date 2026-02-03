@@ -34,6 +34,17 @@ html, body {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.10);
   box-shadow: none;
+  /* Prevent stacking-context issues that can hide the mobile sidebar */
+  z-index: 50;
+}
+
+/* Ensure mobile docs drawer (navbar sidebar) is always above everything */
+.navbar-sidebar {
+  z-index: 1000;
+}
+
+.navbar-sidebar__backdrop {
+  z-index: 999;
 }
 
 .navbar__inner {
