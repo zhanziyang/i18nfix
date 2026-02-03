@@ -59,6 +59,9 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
   const tc = cfg.translate;
   if (!tc) throw new Error('Config missing translate section. Add translate: { provider, apiKeyEnv, model }');
 
+  let totalTranslated = 0;
+  let totalFailed = 0;
+
   const apiKey = getApiKey(tc);
   const delayMs = tc.delayMs ?? 0;
   const maxItems = tc.maxItems;
@@ -183,6 +186,8 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
     }
 
     let done = 0;
+    let translatedCount = 0;
+    let failedCount = 0;
 
     await mapLimit(batches, concurrency, async (batch) => {
       const payload = batch.map((k) => ({ key: k, text: String(baseFlat[k]) }));
@@ -243,6 +248,8 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
 
         if (translated && translated.trim()) {
           targetFlat[k] = translated;
+          translatedCount++;
+          totalTranslated++;
           if (cacheEnabled && !cached) {
             await cache.set({ provider: tc.provider, model: tc.model, sourceLang: fromLang === 'auto' ? undefined : fromLang, targetLang: toLang, text: baseText }, translated);
           }
@@ -251,6 +258,12 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
             console.log(chalk.cyan(k));
             console.log(chalk.gray(`BASE: ${baseText}`));
             console.log(chalk.green(`TRNS: ${translated}`));
+          }
+        } else {
+          failedCount++;
+          totalFailed++;
+          if (opts.failFast) {
+            throw new Error(`Translation failed for key: ${k} (${targetFile})`);
           }
         }
 
@@ -279,11 +292,19 @@ export async function runTranslate(cfg: I18nFixConfig, opts: TranslateRunOptions
       originalRaw: targetMeta.raw,
     });
     console.log(chalk.green(`Wrote: ${outPath}`));
+
+    const summaryLine = `Translated: ${translatedCount}/${items.length}` + (failedCount ? `  Failed: ${failedCount}` : '');
+    console.log(failedCount ? chalk.yellow(summaryLine) : chalk.gray(summaryLine));
+
     if (remaining > 0) {
       console.log(chalk.gray(`Next: re-run translate to process remaining items, or increase translate.maxItems in config.`));
     }
   }
   if (totalBar.isActive) totalBar.stop();
+
+  if (totalFailed > 0) {
+    throw new Error(`Translation failed for ${totalFailed} item(s).`);
+  }
 }
 
 // ensure total bar stops
