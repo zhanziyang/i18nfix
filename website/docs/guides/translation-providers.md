@@ -37,7 +37,7 @@ Example:
 Prefer:
 
 ```bash
-i18nfix fix --in-place --translate
+npx i18nfix fix --in-place --translate
 ```
 
 instead of calling `translate` directly.

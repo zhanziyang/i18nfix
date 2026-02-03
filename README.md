@@ -32,6 +32,14 @@ i18nfix --help
 ```
 
 
+## The big idea (recommended)
+
+Maintain one **base** language by hand (source of truth). Let i18nfix (often in CI) keep every other locale file in sync.
+
+- ✅ Edit **only** `base`
+- ✅ Commit generated updates to `targets`
+- ❌ Don’t hand-edit `targets`
+
 ## Getting started (integrate into an existing project)
 
 ### 1) Install
@@ -54,7 +62,7 @@ If you currently only have one language and want to scaffold additional language
 
 ```bash
 # create ja.ts / fr.ts (skips existing files)
-i18nfix new --langs fr,ja
+npx i18nfix new --langs fr,ja
 ```
 
 By default, i18nfix will follow an existing filename pattern if present (e.g. `en.ts` → `fr.ts`).
@@ -68,8 +76,7 @@ Add to your project's `package.json`:
   "scripts": {
     "i18n:config": "i18nfix config",
     "i18n:check": "i18nfix check",
-    "i18n:fix": "i18nfix fix --out-dir fixed",
-    "i18n:fix:inplace": "i18nfix fix --in-place",
+    "i18n:fix": "i18nfix fix --in-place",
     "i18n:fix:drop-extra": "i18nfix fix --in-place --drop-extra-keys",
     "i18n:fix:translate": "i18nfix fix --in-place --translate",
     "i18n:fix:translate:verbose": "i18nfix fix --in-place --translate -v"
@@ -127,14 +134,12 @@ jobs:
 
 ## Quick start (recommended workflow)
 
-### 1) Create/update config (Q&A)
+### 1) Create config (wizard)
 
 ```bash
-# create
-i18nfix init
-
-# update later via Q&A
-i18nfix config
+npx i18nfix init
+# or update later
+npx i18nfix config
 ```
 
 This writes `i18nfix.config.json` in the current directory.
@@ -142,36 +147,18 @@ This writes `i18nfix.config.json` in the current directory.
 ### 2) Check
 
 ```bash
-i18nfix check
+npx i18nfix check
 # JSON report
-i18nfix check --json
+npx i18nfix check --json
 ```
 
-### 3) Fix + Translate (one command)
+### 3) Fix + Translate (recommended)
 
 ```bash
-# fix output to ./fixed
-# then translate output to ./translated
-i18nfix fix --out-dir fixed --translate --translate-out-dir translated
+npx i18nfix fix --in-place --translate
 ```
 
-Fix and translate into the **same directory** (e.g. `dist-locales/`):
-
-```bash
-i18nfix fix --out-dir dist-locales --translate --translate-out-dir dist-locales
-```
-
-Fix and translate **in-place** (overwrite your target files):
-
-```bash
-i18nfix fix --in-place --translate
-```
-
-Verbose (prints BASE/TRNS for each translated key):
-
-```bash
-i18nfix fix --out-dir fixed --translate --translate-out-dir translated -v
-```
+(If you only want structural fixes: `npx i18nfix fix --in-place`.)
 
 ## Example included
 
