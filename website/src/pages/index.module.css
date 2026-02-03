@@ -267,9 +267,7 @@
   }
 }
 
-.heroRight {
-  display: none;
-}
+/* heroRight is used for the hero illustration (do not hide it) */
 
 .installCard,
 .demoCard {
