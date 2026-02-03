@@ -44,7 +44,23 @@
 }
 
 .heroInner {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 440px;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.heroRight {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.heroArt {
+  width: min(440px, 100%);
+  height: auto;
+  opacity: 0.92;
+  filter: drop-shadow(0 40px 120px rgba(0, 0, 0, 0.65));
 }
 
 /* -----------------
@@ -94,6 +110,20 @@
 @media screen and (max-width: 996px) {
   .hero {
     padding: 3rem 0 2rem;
+  }
+
+  .heroInner {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .heroRight {
+    justify-content: center;
+  }
+
+  .heroArt {
+    width: min(460px, 92vw);
+    opacity: 0.85;
   }
 }
 

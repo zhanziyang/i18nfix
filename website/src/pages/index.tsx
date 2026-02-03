@@ -87,6 +87,15 @@ function Hero() {
             </pre>
           </div>
         </div>
+
+        <div className={styles.heroRight}>
+          <img
+            className={styles.heroArt}
+            src="/img/hero-illustration.png"
+            alt="Auto-sync locale files from one source language"
+            loading="eager"
+          />
+        </div>
       </div>
     </header>
   );
