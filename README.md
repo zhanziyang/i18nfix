@@ -21,7 +21,6 @@ What it can do:
 - Node.js >= 18
 
 ## Getting started (integrate into an existing project)
-## Getting started (integrate into an existing project)
 
 ### 1) Install
 
@@ -239,12 +238,6 @@ Reference docs in-repo:
   - basic Markdown markers must be preserved
 - caching (default on):
   - `.i18nfix-cache/translations.jsonl`
-
-## Roadmap
-
-- Better placeholder detection (ICU message format, etc.)
-- Array handling
-- GitHub PR mode
 
 ## License
 
