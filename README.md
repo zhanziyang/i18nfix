@@ -20,7 +20,7 @@ What it can do:
 
 - Node.js >= 18
 
-## Install
+## Install (from source)
 
 ```bash
 git clone https://github.com/zhanziyang/i18nfix.git
@@ -28,7 +28,8 @@ cd i18nfix
 npm install
 npm run build
 
-i18nfix --help
+# run the local CLI
+npx i18nfix --help
 ```
 
 
@@ -165,8 +166,8 @@ npx i18nfix fix --in-place --translate
 Try the included example files:
 
 ```bash
-i18nfix check --config examples/i18nfix.config.json
-i18nfix fix --config examples/i18nfix.config.json --out-dir examples/fixed --translate --translate-out-dir examples/translated
+npx i18nfix check --config examples/i18nfix.config.json
+npx i18nfix fix --config examples/i18nfix.config.json --in-place --translate
 ```
 
 What the example demonstrates:

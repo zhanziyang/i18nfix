@@ -45,18 +45,18 @@ For machine-readable output (CI / tooling):
 npx i18nfix check --json
 ```
 
-### Fix
+### Fix (recommended: in-place)
 
-Write fixed files to a directory:
-
-```bash
-npx i18nfix fix --out-dir fixed
-```
-
-Or overwrite targets:
+Recommended for the “one source language” workflow: update `targets` in-place, then commit the changes.
 
 ```bash
 npx i18nfix fix --in-place
+```
+
+If you prefer a safer dry-run style, write output to a directory:
+
+```bash
+npx i18nfix fix --out-dir fixed
 ```
 
 ### Translate (recommended via fix)
