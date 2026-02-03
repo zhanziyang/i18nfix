@@ -249,7 +249,6 @@ Language handling:
 ## Documentation
 
 - Website: https://zhanziyang.github.io/i18nfix/
-- Demo: https://zhanziyang.github.io/i18nfix/demo
 - Recommended workflow: https://zhanziyang.github.io/i18nfix/docs/guides/workflow
 
 Reference docs in-repo:

@@ -180,30 +180,7 @@
   padding-right: 12px;
 }
 
-.demoTop {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-@media (max-width: 996px) {
-  .demoTop {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-.demoTitle {
-  font-weight: 900;
-  letter-spacing: -0.02em;
-}
-
-.demoSub {
-  color: var(--ifm-color-emphasis-600);
-  font-size: 0.95rem;
-}
+/* demoTop/demoTitle removed */
 
 .demoStack {
   display: grid;
@@ -248,14 +225,26 @@
 }
 
 .demoBlockTitle {
-  font-weight: 950;
-  letter-spacing: -0.02em;
+  font-weight: 980;
+  letter-spacing: -0.03em;
+  font-size: 1.55rem;
 }
 
 .demoMetaLine {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
+}
+
+@media (max-width: 996px) {
+  .demoMetaLine {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .demoPill {
+    width: fit-content;
+  }
 }
 
 .demoPill {
@@ -269,6 +258,7 @@
   color: rgba(255, 255, 255, 0.72);
   font-size: 12px;
   letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .demoCmd {

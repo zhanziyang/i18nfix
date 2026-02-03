@@ -97,15 +97,16 @@ function Demo() {
   return (
     <section id="demo" className={styles.demoSection}>
       <div className={clsx('container container--fluid', styles.demoContainer)}>
-        <div className={styles.demoTop}>
-          <div className={styles.demoTitle}>See the change</div>
-        </div>
         <div className={styles.demoStack}>
           <div className={styles.demoBlock}>
             <div className={styles.demoToolbar}>
               <div className={styles.demoToolbarLeft}>
                 <div className={styles.demoBlockTitle}>Fix</div>
-                <div className={styles.demoMetaLine}>Adds missing keys • Keeps structure consistent • No content changes</div>
+                <div className={styles.demoMetaLine}>
+                  <span className={styles.demoPill}>Adds missing keys</span>
+                  <span className={styles.demoPill}>Keeps structure consistent</span>
+                  <span className={styles.demoPill}>No content changes</span>
+                </div>
               </div>
               <div className={styles.demoToolbarRight}>
                 <code className={styles.demoCmd}>i18nfix fix --out-dir fixed</code>
@@ -120,7 +121,11 @@ function Demo() {
             <div className={styles.demoToolbar}>
               <div className={styles.demoToolbarLeft}>
                 <div className={styles.demoBlockTitle}>Translate</div>
-                <div className={styles.demoMetaLine}>Fills missing/untranslated strings • Preserves variables • Great for CI</div>
+                <div className={styles.demoMetaLine}>
+                  <span className={styles.demoPill}>Fills missing/untranslated strings</span>
+                  <span className={styles.demoPill}>Preserves variables</span>
+                  <span className={styles.demoPill}>Great for CI</span>
+                </div>
               </div>
               <div className={styles.demoToolbarRight}>
                 <code className={styles.demoCmd}>i18nfix fix --in-place --translate</code>

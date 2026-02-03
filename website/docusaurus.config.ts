@@ -2,34 +2,27 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-
 const config: Config = {
   title: 'i18nfix',
-  tagline: 'Check, fix, translate i18n locale files — safely.',
-  favicon: 'img/favicon.png',
-
-  // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
-  future: {
-    v4: true, // Improve compatibility with the upcoming Docusaurus v4
-  },
+  tagline: 'Keep locales in sync across languages—automatically.',
+  favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  // If you deploy to GitHub Pages under https://zhanziyang.github.io/i18nfix/
-  // these defaults will be correct.
   url: 'https://zhanziyang.github.io',
+
+  // Set the /<baseUrl>/ pathname under which your site is served
+  // For GitHub Pages deployment, it is often '/<projectName>/'
   baseUrl: '/i18nfix/',
 
   // GitHub pages deployment config.
+  // If you aren't using GitHub pages, you don't need these.
   organizationName: 'zhanziyang',
   projectName: 'i18nfix',
+  trailingSlash: false,
 
   onBrokenLinks: 'throw',
-  onBrokenAnchors: 'throw',
+  onBrokenMarkdownLinks: 'warn',
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -41,13 +34,8 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/zhanziyang/i18nfix/tree/main/website/',
-          lastVersion: 'current',
-          versions: {
-            current: {
-              label: 'Next',
-            },
-          },
+          routeBasePath: 'docs',
+          editUrl: 'https://github.com/zhanziyang/i18nfix/tree/main/website',
         },
         blog: false,
         theme: {
@@ -58,13 +46,7 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Social card
     image: 'img/og-v4.png',
-    colorMode: {
-      defaultMode: 'dark',
-      disableSwitch: true,
-      respectPrefersColorScheme: false,
-    },
     navbar: {
       title: 'i18nfix',
       logo: {
@@ -86,12 +68,6 @@ const config: Config = {
           position: 'left',
           // Ensure only Docs is active for /docs/*
           activeBaseRegex: '^/i18nfix/docs/.*',
-        },
-        {
-          to: '/demo',
-          label: 'Demo',
-          position: 'left',
-          activeBaseRegex: '^/i18nfix/demo/?$',
         },
         {
           type: 'docsVersionDropdown',
