@@ -20,27 +20,7 @@ What it can do:
 
 - Node.js >= 18
 
-## Install (from source)
-
-```bash
-git clone https://github.com/zhanziyang/i18nfix.git
-cd i18nfix
-npm install
-npm run build
-
-# run the local CLI
-npx i18nfix --help
-```
-
-
-## The big idea (recommended)
-
-Maintain one **base** language by hand (source of truth). Let i18nfix (often in CI) keep every other locale file in sync.
-
-- ✅ Edit **only** `base`
-- ✅ Commit generated updates to `targets`
-- ❌ Don’t hand-edit `targets`
-
+## Getting started (integrate into an existing project)
 ## Getting started (integrate into an existing project)
 
 ### 1) Install
