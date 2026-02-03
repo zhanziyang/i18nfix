@@ -122,8 +122,11 @@
   }
 
   .heroArt {
-    width: min(420px, 86vw);
-    max-height: 42vh;
+    /* Make mobile illustration ~half of desktop visual size */
+    width: min(320px, 78vw);
+    max-height: 220px;
+    height: auto;
+    object-fit: contain;
     opacity: 0.85;
   }
 }
