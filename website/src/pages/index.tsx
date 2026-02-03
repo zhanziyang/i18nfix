@@ -1,6 +1,7 @@
 import type {ReactNode} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import Tabs from '@theme/Tabs';
@@ -91,7 +92,7 @@ function Hero() {
         <div className={styles.heroRight}>
           <img
             className={styles.heroArt}
-            src="/img/hero-illustration.png"
+            src={useBaseUrl('/img/hero-illustration.png')}
             alt="Auto-sync locale files from one source language"
             loading="eager"
           />
