@@ -59,7 +59,7 @@ const config: Config = {
 
   themeConfig: {
     // Social card
-    image: 'img/og-v2.png',
+    image: 'img/og-v3.png',
     colorMode: {
       defaultMode: 'dark',
       disableSwitch: true,
