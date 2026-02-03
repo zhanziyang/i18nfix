@@ -17,6 +17,8 @@
     linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 38%, rgba(0, 0, 0, 0.44));
   filter: blur(1px);
   pointer-events: none;
+  animation: heroDrift 18s ease-in-out infinite;
+  transform-origin: 25% 25%;
 }
 
 .heroBg::before {
@@ -43,6 +45,50 @@
 
 .heroInner {
   display: block;
+}
+
+/* -----------------
+   Motion (subtle)
+------------------ */
+
+@keyframes heroDrift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, 14px, 0) scale(1.015); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes riseIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  animation: riseIn 720ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.reveal1 { animation-delay: 40ms; }
+.reveal2 { animation-delay: 120ms; }
+.reveal3 { animation-delay: 210ms; }
+.reveal4 { animation-delay: 310ms; }
+.reveal5 { animation-delay: 420ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .heroBg { animation: none; }
+  .reveal {
+    opacity: 1;
+    animation: none;
+    filter: none;
+    transform: none;
+  }
 }
 
 @media screen and (max-width: 996px) {

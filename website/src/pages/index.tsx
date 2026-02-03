@@ -63,15 +63,15 @@ function Hero() {
       <div className={styles.heroBg} />
       <div className={clsx('container', styles.heroInner)}>
         <div className={styles.heroLeft}>
-          <div className={styles.badge}>CLI for i18n hygiene</div>
-          <Heading as="h1" className={styles.title}>
+          <div className={clsx(styles.badge, styles.reveal, styles.reveal1)}>CLI for i18n hygiene</div>
+          <Heading as="h1" className={clsx(styles.title, styles.reveal, styles.reveal2)}>
             i18nfix
           </Heading>
-          <p className={styles.subtitle}>
+          <p className={clsx(styles.subtitle, styles.reveal, styles.reveal3)}>
             Maintain one source language. Let CI keep every other locale in sync—automatically.
           </p>
 
-          <div className={styles.ctaRow}>
+          <div className={clsx(styles.ctaRow, styles.reveal, styles.reveal4)}>
             <Link className={clsx(styles.ctaPrimary)} to="/docs/getting-started">
               Get started
             </Link>
@@ -80,7 +80,7 @@ function Hero() {
             </Link>
           </div>
 
-          <div className={styles.quickRow}>
+          <div className={clsx(styles.quickRow, styles.reveal, styles.reveal5)}>
             <span className={styles.quickLabel}>$</span>
             <pre className={clsx('prism-code', styles.terminalInline)}>
               <code>i18nfix fix --in-place --translate</code>
