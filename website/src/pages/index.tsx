@@ -17,12 +17,15 @@ function InstallTabs() {
         <div className={styles.installHint}>Add as a dev dependency (recommended)</div>
       </div>
 
-      <Tabs groupId="install" defaultValue="npm" values={[
-        {label: 'npm', value: 'npm'},
-        {label: 'pnpm', value: 'pnpm'},
-        {label: 'yarn', value: 'yarn'},
-        {label: 'bun', value: 'bun'},
-      ]}>
+      <Tabs
+        groupId="install"
+        defaultValue="npm"
+        values={[
+          {label: 'npm', value: 'npm'},
+          {label: 'pnpm', value: 'pnpm'},
+          {label: 'yarn', value: 'yarn'},
+          {label: 'bun', value: 'bun'},
+        ]}>
         <TabItem value="npm">
           <pre className={clsx('prism-code', styles.terminal)}>
             <code>npm i -D i18nfix</code>
@@ -82,10 +85,6 @@ function Hero() {
             <pre className={clsx('prism-code', styles.terminalInline)}>
               <code>i18nfix fix --in-place --translate</code>
             </pre>
-          </div>
-
-          <div className={styles.installRow}>
-            <InstallTabs />
           </div>
         </div>
       </div>
@@ -168,11 +167,7 @@ function Features() {
       body: 'Adds missing keys and keeps your locale shape consistent.',
       icon: (
         <svg viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path
-            d="M7 3h10v4H7V3z"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          />
+          <path d="M7 3h10v4H7V3z" stroke="currentColor" strokeWidth="1.8" />
           <path
             d="M5 10h14M5 14h14M5 18h10"
             stroke="currentColor"
@@ -300,6 +295,16 @@ function Features() {
   );
 }
 
+function InstallFinal() {
+  return (
+    <section className={styles.installFinalSection}>
+      <div className={clsx('container', styles.installFinalContainer)}>
+        <InstallTabs />
+      </div>
+    </section>
+  );
+}
+
 export default function Home(): ReactNode {
   return (
     <Layout
@@ -309,6 +314,7 @@ export default function Home(): ReactNode {
       <main>
         <Demo />
         <Features />
+        <InstallFinal />
       </main>
     </Layout>
   );

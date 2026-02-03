@@ -150,6 +150,30 @@
   max-width: 40rem;
 }
 
+.installFinalSection {
+  padding: 4.2rem 0 3.2rem;
+  position: relative;
+}
+
+.installFinalContainer {
+  min-height: calc(100vh - 320px);
+  display: grid;
+  place-items: center;
+}
+
+.installFinalContainer :global(.tabs) {
+  width: min(920px, 100%);
+}
+
+@media (max-width: 996px) {
+  .installFinalSection {
+    padding: 2.8rem 0 2.2rem;
+  }
+  .installFinalContainer {
+    min-height: auto;
+  }
+}
+
 .heroRight {
   display: none;
 }
