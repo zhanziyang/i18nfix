@@ -40,11 +40,22 @@ html, body {
 
 /* Ensure mobile docs drawer (navbar sidebar) is always above everything */
 .navbar-sidebar {
-  z-index: 1000;
+  /* iOS Safari: ensure the docs drawer is a true overlay */
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  max-height: 100dvh;
+  width: min(92vw, 360px);
+  padding-top: env(safe-area-inset-top);
+  z-index: 2000;
 }
 
 .navbar-sidebar__backdrop {
-  z-index: 999;
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  z-index: 1999;
 }
 
 .navbar__inner {
