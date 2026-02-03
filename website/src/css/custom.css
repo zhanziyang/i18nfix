@@ -7,6 +7,9 @@
 /* You can override the default Infima variables here. */
 :root {
   /* diffs.com-ish: restrained, high-contrast, dark-only */
+  --ifm-font-color-base: rgba(255, 255, 255, 0.88);
+  --ifm-heading-color: rgba(255, 255, 255, 0.96);
+
   --ifm-color-primary: #a8ff60;
   --ifm-color-primary-dark: #8dfb3a;
   --ifm-color-primary-darker: #7df62a;

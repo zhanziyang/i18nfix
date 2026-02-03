@@ -46,6 +46,11 @@ const config: Config = {
   ],
 
   themeConfig: {
+    colorMode: {
+      defaultMode: 'dark',
+      disableSwitch: true,
+      respectPrefersColorScheme: false,
+    },
     image: 'img/og-v4.png',
     navbar: {
       title: 'i18nfix',
