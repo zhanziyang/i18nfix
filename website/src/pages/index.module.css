@@ -122,7 +122,8 @@
   }
 
   .heroArt {
-    width: min(460px, 92vw);
+    width: min(420px, 86vw);
+    max-height: 42vh;
     opacity: 0.85;
   }
 }
