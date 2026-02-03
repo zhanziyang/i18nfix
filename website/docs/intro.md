@@ -24,26 +24,30 @@ Supported formats (common):
 
 ## Quick start
 
+If you installed i18nfix locally (`npm i -D i18nfix`), use **npx** to run it:
+
 1) Create config
 
 ```bash
-i18nfix init
+npx i18nfix init
 ```
 
 2) Check
 
 ```bash
-i18nfix check
+npx i18nfix check
 ```
 
 3) Fix (and optionally translate)
 
 ```bash
 # write to ./fixed
-i18nfix fix --out-dir fixed
+npx i18nfix fix --out-dir fixed
 
 # fix + translate (recommended)
-i18nfix fix --in-place --translate
+npx i18nfix fix --in-place --translate
 ```
+
+Tip: for teams/CI, add npm scripts (see **Recommended workflow**).
 
 Next: head to **Getting Started**.
