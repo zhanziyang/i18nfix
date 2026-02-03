@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import dotenv from 'dotenv';
-dotenv.config();
+// Quiet dotenv runtime banner/tips (keeps CI output clean)
+dotenv.config({ quiet: true });
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { loadConfig, mergeConfig, normalizeKeyStyle, normalizePlaceholderStyle, resolveConfigPath } from './config.js';
@@ -153,18 +154,34 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'fix')!)
       failFast: Boolean(opts.failFast),
     });
 
-    console.log(chalk.green('Done.'));
+    const translateRequested = Boolean(opts.translate);
+
+    if (translateRequested && !cfg.translate) {
+      // Still allow `fix` to complete, but fail the command because user asked to translate.
+      console.log(chalk.green('Fix done.'));
+      console.log(`Issues found: ${report.issues.length}`);
+      console.error(chalk.red('Translation requested, but config is missing a translate section.'));
+      console.error(chalk.gray('Add translate: { provider, apiKeyEnv, model } to i18nfix.config.json.'));
+      process.exit(1);
+    }
+
+    console.log(chalk.green(translateRequested ? 'Fix done. Starting translation…' : 'Done.'));
     console.log(`Issues found: ${report.issues.length}`);
 
-    if (opts.translate) {
-      await runTranslate(cfg, {
-        inPlace: Boolean(opts.inPlace),
-        outDir: opts.translateOutDir ?? opts.outDir,
-        mode: opts.translateMode,
-        showLangs: true,
-        printText: Boolean(opts.verbose),
-        failFast: Boolean(opts.failFast),
-      });
+    if (translateRequested) {
+      try {
+        await runTranslate(cfg, {
+          inPlace: Boolean(opts.inPlace),
+          outDir: opts.translateOutDir ?? opts.outDir,
+          mode: opts.translateMode,
+          showLangs: true,
+          printText: Boolean(opts.verbose),
+          failFast: Boolean(opts.failFast),
+        });
+      } catch (e: any) {
+        console.error(chalk.red(e?.message ?? String(e)));
+        process.exit(1);
+      }
     }
 
     process.exit(report.summary.parseErrors > 0 ? 2 : 0);
@@ -192,14 +209,21 @@ applyCommonOptions(program.commands.find((c) => c.name() === 'translate')!)
       ignoreKeys: opts.ignoreKeys ? opts.ignoreKeys.split(',').map((s: string) => s.trim()).filter(Boolean) : undefined,
     });
 
-    await runTranslate(cfg, {
-      inPlace: Boolean(opts.inPlace),
-      outDir: opts.outDir,
-      mode: opts.mode,
-      showLangs: Boolean(opts.showLangs),
-      printText: Boolean(opts.verbose),
-      failFast: Boolean(opts.failFast),
-    });
+    try {
+      await runTranslate(cfg, {
+        inPlace: Boolean(opts.inPlace),
+        outDir: opts.outDir,
+        mode: opts.mode,
+        showLangs: Boolean(opts.showLangs),
+        printText: Boolean(opts.verbose),
+        failFast: Boolean(opts.failFast),
+      });
+    } catch (e: any) {
+      console.error(chalk.red(e?.message ?? String(e)));
+      process.exit(1);
+    }
+
+    process.exit(0);
   });
 
 program.parseAsync(process.argv);
