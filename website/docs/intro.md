@@ -4,6 +4,14 @@ title: Introduction
 
 **i18nfix** is a CLI to **check**, **fix**, and **translate** i18n locale files.
 
+## The big idea
+
+**Maintain one language by hand.** Let i18nfix (often in CI) keep every other locale file in sync:
+
+- adds missing keys / keeps structure consistent
+- flags unsafe placeholder mismatches
+- optionally translates only what’s broken
+
 It’s built for the boring-but-painful reality of i18n maintenance:
 
 - keys drift between locales

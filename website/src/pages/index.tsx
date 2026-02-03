@@ -65,7 +65,7 @@ function Hero() {
             i18nfix
           </Heading>
           <p className={styles.subtitle}>
-            Keep locales in sync across languages—automatically.
+            Maintain one source language. Let CI keep every other locale in sync—automatically.
           </p>
 
           <div className={styles.ctaRow}>
@@ -99,9 +99,6 @@ function Demo() {
       <div className={clsx('container container--fluid', styles.demoContainer)}>
         <div className={styles.demoTop}>
           <div className={styles.demoTitle}>See the change</div>
-          <div className={styles.demoSub}>
-            Fix uses unified view (base en on the left, zh diff on the right). Translate uses split view.
-          </div>
         </div>
         <div className={styles.demoStack}>
           <div className={styles.demoBlock}>
