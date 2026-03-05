@@ -211,6 +211,8 @@ Supported providers:
 - `claude` (env: `ANTHROPIC_API_KEY`)
 - `gemini` (env: `GEMINI_API_KEY`)
 
+`translate.baseUrl` can override the API base URL for `openai`, `openrouter`, and `claude` providers.
+
 Language handling:
 - `targetLang` is inferred from the target filename when not provided (e.g. `zh.json`, `ja.json`, `fr-FR.json` → `zh`, `ja`, `fr`).
 - from/to languages are printed by default during translation. Use `translate --no-show-langs` to hide.
