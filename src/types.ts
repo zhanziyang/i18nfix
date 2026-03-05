@@ -8,7 +8,7 @@ export interface TranslateConfig {
   /** If you insist, you can store the key here (not recommended). */
   apiKey?: string;
   model?: string;
-  /** For openai-compatible providers (mainly for self-hosted proxies). */
+  /** Provider API base URL override (openai/openrouter/claude). */
   baseUrl?: string;
   /** Optional language hint, e.g. "en" */
   sourceLang?: string;

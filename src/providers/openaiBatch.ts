@@ -12,7 +12,7 @@ export interface BatchResult {
 }
 
 function buildSystemPrompt(sourceLang?: string, targetLang?: string) {
-  return `You are a professional software localization translator.\nTranslate each item from ${sourceLang ?? 'the source language'} to ${targetLang ?? 'the target language'}.\nReturn ONLY valid JSON: an array of objects with shape {"key": string, "text": string}.\nRules:\n- Keep placeholders unchanged (examples: {name}, %{count}, %s).\n- Do not add extra keys.\n- Preserve punctuation and whitespace meaningfully.`;
+  return `You are a professional software localization translator.\nTranslate each item from ${sourceLang ?? 'the source language'} to ${targetLang ?? 'the target language'}.\nReturn ONLY valid JSON object with shape {"items": [{"key": string, "text": string}]}.\nRules:\n- Keep placeholders unchanged (examples: {name}, %{count}, %s).\n- Do not add extra keys.\n- Preserve punctuation and whitespace meaningfully.`;
 }
 
 export async function translateBatchOpenAI(
@@ -52,7 +52,6 @@ export async function translateBatchOpenAI(
   const content = json?.choices?.[0]?.message?.content;
   if (typeof content !== 'string') throw new Error('Empty batch translation response');
 
-  // response_format=json_object => expect {items:[{key,text},...]}
   let parsed: any;
   try {
     parsed = JSON.parse(content);
@@ -60,7 +59,16 @@ export async function translateBatchOpenAI(
     throw new Error(`Failed to parse JSON batch output: ${content.slice(0, 200)}`);
   }
 
-  const arr = parsed?.items;
+  // Compatibility with proxies/models that return different JSON shapes.
+  let arr: any[] | undefined;
+  if (Array.isArray(parsed)) {
+    arr = parsed;
+  } else if (Array.isArray(parsed?.items)) {
+    arr = parsed.items;
+  } else if (parsed && typeof parsed === 'object') {
+    // fallback: {"key":"translated"} object shape
+    arr = Object.entries(parsed).map(([key, text]) => ({ key, text }));
+  }
   if (!Array.isArray(arr)) throw new Error('Batch output missing items array');
 
   const inputKeySet = new Set(items.map((i) => i.key));

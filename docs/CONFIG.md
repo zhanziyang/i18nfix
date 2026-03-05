@@ -94,7 +94,7 @@ Examples:
 - Gemini: `gemini-1.5-flash`
 
 ### `translate.baseUrl` (optional)
-For OpenAI-compatible endpoints (mainly for self-hosted proxies). Usually not needed.
+Provider API base URL override. Useful for OpenAI-compatible proxies and Anthropic-compatible gateways. Usually not needed.
 
 ### `translate.maxItems` (number, optional)
 Safety limit: maximum strings translated **per run**.

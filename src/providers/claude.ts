@@ -7,7 +7,8 @@ function buildPrompt(req: TranslateRequest) {
 }
 
 export async function translateClaude(opts: TranslateOptions, req: TranslateRequest): Promise<TranslateResponse> {
-  const url = 'https://api.anthropic.com/v1/messages';
+  const baseUrl = opts.baseUrl ?? 'https://api.anthropic.com/v1';
+  const url = `${baseUrl.replace(/\/$/, '')}/messages`;
   const body = {
     model: opts.model ?? 'claude-3-5-haiku-latest',
     max_tokens: 512,
