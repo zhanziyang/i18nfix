@@ -4,7 +4,7 @@ export interface TranslateOptions {
   provider: ProviderName;
   apiKey: string;
   model?: string;
-  // openrouter/openai-compatible override
+  // provider API base URL override (openai/openrouter/claude)
   baseUrl?: string;
 }
 
